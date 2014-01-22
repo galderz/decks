@@ -1,0 +1,86 @@
+= Content: Write, Read and Chunk
+
+// tag::content[]
+
+== !
+
+[.statement]
+Write once, use *anywhere* and *everywhere*
+
+== !
+
+[.statement]
+Read in the *raw*
+
+== !
+
+[.statement]
+Write the *chunk*
+
+== Chunk vs The Blob
+
+[{title-off}]
+image::chunkvsblob.png[]
+
+== The Blob
+
+[.invert, {caption-off}]
+.Your content in HTML
+image::blob_content.png[]
+
+== !
+
+[.statement]
+*Chunk* and *Clump*
+
+== The Spreadsheet of Doom, Death, and Horror
+
+[.relax-y, {title-off}]
+image::doom_sheet.png[]
+
+== !
+
+[.statement]
+Break your *content* into *types*
+
+== !
+
+[.scatter]
+* press release
+* landing page blurb
+* product description
+* feature deep dives
+* white papers
+* case studies
+* executive briefs
+* brochures
+* presentations
+* speaker, staff, and team bios
+* product reviews
+* blog entries
+* portfolio slideshows
+
+== !
+
+[.statement]
+*Clump* similar *content* across your project
+
+== !
+
+[{title-off}]
+image::attribute.png[]
+
+== !
+
+[.statement]
+*Output* anyway you *need it*
+
+== !
+
+[.statement]
+*Style* anyway you *like it*
+
+// end::content[]
+
+== Collaborating
+

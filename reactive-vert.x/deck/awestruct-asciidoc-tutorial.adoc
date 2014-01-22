@@ -1,0 +1,780 @@
+= Install Awestruct
+Dan Allen; Sarah White
+:experimental:
+:toc2:
+:sectanchors:
+:idprefix:
+:idseparator: -
+:icons: font
+:source-highlighter: coderay
+
+This tutorial...
+
+////
+Step 1
+sidebar in layout (and other layouts like on reuze.me)
+inserting gist
+sentence per line
+post excerpt and other types of "chunks" (chunked content)
+link to tutorial for pushing to github pages
+styles for posts listing page (headings too big)
+tip about not loading certain extensions when profile is development
+slides
+favicon
+git history at bottom of file
+docinfo or common include
+timezone handling
+author bio at bottom of post (see smashingmagazine or alistapart for example)
+////
+
+== Install RVM (Linux and MacOSX)
+
+ $ curl -L https://get.rvm.io | bash -s stable --ruby=1.9.3
+
+== Setup fresh Ruby gemset
+
+ $ rvm use 1.9.3@writeadapt --create
+
+TIP: If you want to use Ruby 2.0, replace +1.9.3+ with +2.0.0+ in the previous two commands.
+
+== Install Awestruct
+
+ $ gem install awestruct
+
+.Console output
+....
+Fetching: tilt-1.4.1.gem (100%)
+Successfully installed tilt-1.4.1
+Fetching: haml-4.0.3.gem (100%)
+
+HEADS UP! Haml 4.0 has many improvements, but also has changes that may break
+your application:
+
+* Support for Ruby 1.8.6 dropped
+* Support for Rails 2 dropped
+* Sass filter now always outputs <style> tags
+* Data attributes are now hyphenated, not underscored
+* html2haml utility moved to the html2haml gem
+* Textile and Maruku filters moved to the haml-contrib gem
+
+For more info see:
+
+http://rubydoc.info/github/haml/haml/file/CHANGELOG.md
+
+Successfully installed haml-4.0.3
+Fetching: mini_portile-0.5.1.gem (100%)
+Successfully installed mini_portile-0.5.1
+Fetching: nokogiri-1.6.0.gem (100%)
+Building native extensions.  This could take a while...
+Successfully installed nokogiri-1.6.0
+Fetching: sass-3.2.9.gem (100%)
+Successfully installed sass-3.2.9
+Fetching: chunky_png-1.2.8.gem (100%)
+Successfully installed chunky_png-1.2.8
+Fetching: fssm-0.2.10.gem (100%)
+Successfully installed fssm-0.2.10
+Fetching: compass-0.12.2.gem (100%)
+Successfully installed compass-0.12.2
+Fetching: compass-960-plugin-0.10.4.gem (100%)
+Successfully installed compass-960-plugin-0.10.4
+Fetching: bootstrap-sass-2.3.2.0.gem (100%)
+Successfully installed bootstrap-sass-2.3.2.0
+Fetching: zurb-foundation-4.2.3.gem (100%)
+Successfully installed zurb-foundation-4.2.3
+Fetching: mime-types-1.23.gem (100%)
+Successfully installed mime-types-1.23
+Fetching: rest-client-1.6.7.gem (100%)
+Successfully installed rest-client-1.6.7
+Fetching: git-1.2.5.gem (100%)
+Successfully installed git-1.2.5
+Fetching: ruby-s3cmd-0.1.5.gem (100%)
+Successfully installed ruby-s3cmd-0.1.5
+Fetching: rb-fsevent-0.9.3.gem (100%)
+Successfully installed rb-fsevent-0.9.3
+Fetching: ffi-1.9.0.gem (100%)
+Building native extensions.  This could take a while...
+Successfully installed ffi-1.9.0
+Fetching: rb-inotify-0.9.0.gem (100%)
+Successfully installed rb-inotify-0.9.0
+Fetching: rb-kqueue-0.2.0.gem (100%)
+Successfully installed rb-kqueue-0.2.0
+Fetching: listen-1.2.2.gem (100%)
+Successfully installed listen-1.2.2
+Fetching: rack-1.5.2.gem (100%)
+Successfully installed rack-1.5.2
+Fetching: awestruct-0.5.2.gem (100%)
+Successfully installed awestruct-0.5.2
+22 gems installed
+....
+
+== Check version of Awestruct
+
+ $ awestruct --version
+
+.Console output
+....
+WARNING: Missing required dependency to activate optional built-in extension minify.rb
+  cannot load such file -- htmlcompressor
+WARNING: Missing required dependency to activate optional built-in extension coffeescripttransform.rb
+  cannot load such file -- coffee-script
+Awestruct: 0.5.2
+http://awestruct.org/
+....
+
+== Next: Create a new Awestruct-based website project
+
+
+.Install Rake and Bundler
+ $ gem install rake bundler
+
+.Console output
+....
+Fetching: rake-10.1.0.gem (100%)
+Successfully installed rake-10.1.0
+Fetching: bundler-1.3.5.gem (100%)
+Successfully installed bundler-1.3.5
+2 gems installed
+....
+
+.Ensure environment is setup correctly
+ $ rake setup
+
+.Generate and preview website
+ $ rake
+
+NOTE: The +rake+ command with no arguments is a shortcut for +rake preview+.
+
+.Console output
+....
+WARNING: Missing required dependency to activate optional built-in extension minify.rb
+  cannot load such file -- htmlcompressor
+WARNING: Missing required dependency to activate optional built-in extension coffeescripttransform.rb
+  cannot load such file -- coffee-script
+Using profile: development
+Generating site: http://localhost:4242
+[Listen warning]:
+The blocking parameter of Listen::Listener#start is deprecated.
+Please use Listen::Adapter#start for a non-blocking listener and Listen::Listener#start! for a blocking one.
+[2013-01-01 00:00:00] INFO  WEBrick 1.3.1
+[2013-01-01 00:00:00] INFO  ruby 2.0.0 (2013-05-14) [x86_64-linux]
+[2013-01-01 00:00:00] INFO  WEBrick::HTTPServer#start: pid=10485 port=4242
+....
+
+.Preview website
+Visit http://localhost:4242 in your web browser.
+
+// TODO insert screenshot
+
+.Halt the preview server
+kbd:[Ctrl+C]
+
+.Structure of generated site
+....
+_site/
+|-- humans.txt
+|-- index.html
+|-- javascripts/
+|   |-- foundation/
+|   |   |-- foundation.alerts.js
+|   |   |-- foundation.clearing.js
+|   |   |-- foundation.cookie.js
+|   |   |-- foundation.dropdown.js
+|   |   |-- foundation.forms.js
+|   |   |-- foundation.interchange.js
+|   |   |-- foundation.joyride.js
+|   |   |-- foundation.js
+|   |   |-- foundation.magellan.js
+|   |   |-- foundation.orbit.js
+|   |   |-- foundation.placeholder.js
+|   |   |-- foundation.reveal.js
+|   |   |-- foundation.section.js
+|   |   |-- foundation.tooltips.js
+|   |   `-- foundation.topbar.js
+|   `-- vendor/
+|       |-- custom.modernizr.js
+|       |-- jquery.js
+|       `-- zepto.js
+|-- robots.txt
+`-- stylesheets/
+    `-- app.css
+....
+
+== Next: Use git to take a snapshot of initial state
+
+== Use git to take a snapshot of initial state
+
+.Initialize new git repository
+ $ git init .
+
+.Instruct git to ignore generated files 
+ $ cat > .gitignore << LINES
+ /.awestruct/
+ /.ruby-*
+ /.sass-cache/
+ /_site/
+ /_tmp/
+ /Gemfile.lock
+ /stylesheets/_themes/
+ LINES
+
+[NOTE]
+====
+After running this command, the the +.gitignore+ file should have the following content:
+
+ /.awestruct/
+ /.ruby-*/
+ /.sass-cache/
+ /_site/
+ /_tmp/
+ /Gemfile.lock
+ /stylesheets/_themes/
+
+====
+
+.Add all non-ignored files to the git repository
+ $ git add .
+
+.Commit the changes to make the snapshot
+ $ git commit -m 'initial import'
+
+Now, any changes you make will be tracked by git, and you can rollback at any time.
+
+== Next: Configure website name, title, author and organization
+
+== Configure website name, title, author and organization
+
+.Change values in +_config/site.yml+
+[source,yaml]
+name: Write__Adapt__
+title: WriteAdapt - For People Who Love Content
+org: Strategy Media
+author: The Octocat
+author_url: https://github.com/octocat
+base_url: ''
+ctx_path: ''
+
+.Tweak a few settings by adding these lines to +_config/site.yml+
+[source,yaml]
+----
+interpolate: false #<1>
+haml:
+  :ugly: true #<2>
+----
+<1> Disables interpolation of Ruby variable expressions in content (e.g., `#{name}`)
+<2> Disables pretty printing (indentation) of HTML output
+
+.Clean and preview site to see changes
+ $ rake clean
+ $ rake
+
+NOTE: The clean step is required since a change to the configuration file, +_config/site.yml+, does not force pages to be regenerated automatically.
+
+== Activate AsciiDoc content
+
+.Uncomment Asciidoctor gem, +asciidoctor+, in Gemfile
+[source,ruby]
+gem 'asciidoctor', '>= 0.1.4.pre'
+
+.Update gems
+ $ bundle update
+
+// QUESTION should this be `bundle install` instead?
+
+.Console output
+....
+Fetching gem metadata from https://rubygems.org/...
+Resolving dependencies...
+Using rake (10.1.0) 
+Installing asciidoctor (0.1.4.preview.2) 
+Using sass (3.2.9) 
+Using bootstrap-sass (2.3.2.0) 
+Using chunky_png (1.2.8) 
+Using fssm (0.2.10) 
+Using compass (0.12.2) 
+Using compass-960-plugin (0.10.4) 
+Using git (1.2.5) 
+Using tilt (1.4.1) 
+Using haml (4.0.3) 
+Installing json (1.8.0) 
+Using rb-fsevent (0.9.3) 
+Using ffi (1.9.0) 
+Using rb-inotify (0.9.0) 
+Using rb-kqueue (0.2.0) 
+Using listen (1.2.2) 
+Using mini_portile (0.5.1) 
+Using nokogiri (1.6.0) 
+Using rack (1.5.2) 
+Using mime-types (1.23) 
+Using rest-client (1.6.7) 
+Using ruby-s3cmd (0.1.5) 
+Using zurb-foundation (4.2.3) 
+Using awestruct (0.5.2) 
+Using bundler (1.3.5) 
+Your bundle is updated!
+....
+
+.Add lines to +_config/site.yml+ to configure Asciidoctor
+[source,yaml]
+asciidoctor:
+  :safe: safe
+  :attributes:
+    sitename: WriteAdapt
+    base_url: ''
+    ctx_path: ''
+    idprefix: ''
+    idseparator: '-'
+    sectanchors: ''
+    icons: font 
+
+.Create a page in AsciiDoc format, +about.adoc+
+[source,asciidoc]
+----
+= About {sitename} <1>
+Your Name
+:awestruct-layout: base <2>
+
+{sitename} was founded by {author} during a conference workshop.
+It's quickly becoming much bigger than this humble beginning.
+
+This page is written in http://asciidoc.org[AsciiDoc].
+It's transformed by http://awestruct.org[Awestruct] and http://asciidoctor.org[Asciidoctor] into a webpage for this static website.
+----
+<1> Becomes main heading on the page
+<2> Specifies the layout to use to frame this content
+
+NOTE: AsciiDoc does not require a special "front-matter" header.
+Instead, regular AsciiDoc attribute entries can be used.
+Attribute names that begin with +awestruct-+ are passed to Awestruct as front-matter variables.
+
+.Edit +_layouts/base.html.haml+ to add About link to navbar
+----
+        %li.divider
+          %li
+            %a{:href=>"#{site.ctx_path}/about.html"} About
+----
+
+// TODO also add in footer
+
+.Clean and preview site to see changes
+ $ rake clean preview
+
+// TODO insert screenshot
+
+== Configure a theme for AsciiDoc and the website
+
+.Clone Asciidoctor stylesheet factory as a submodule
+ $ git submodule add -b embedded-stylesheets \
+ https://github.com/asciidoctor/asciidoctor-stylesheet-factory.git stylesheets/_themes
+
+////
+.Switch to the stylesheets directory
+ $ cd stylesheets
+
+.Clone the Asciidoctor stylesheet factory repository
+ $ git clone --branch embedded-stylesheets https://github.com/asciidoctor/asciidoctor-stylesheet-factory _themes
+
+.Switch back to the project root
+ $ cd ..
+////
+
+
+.Replace content of +stylesheets/app.scss+ to configure theme
+[source,css]
+----
+@import "_themes/sass/foundation-embedded.scss";
+@import "foundation/components/buttons";
+@import "foundation/components/top-bar";
+@import "foundation/components/inline-lists";
+
+// fall through defaults
+$footer-bg: $body-font-color !default;
+$footer-font-color: invert($body-font-color) !default;
+
+.top-bar a {
+  text-decoration: none;
+}
+
+h1 em {
+  letter-spacing: 1px;
+}
+
+body > footer {
+  background: $footer-bg;
+  padding: $panel-padding;
+  color: $footer-font-color;
+}
+----
+
+TIP: Alternative themes include +asciidoctor-embedded+ and +rocket-panda-embedded+.
+
+.Add line at top of +_ext/pipeline.rb+ to load SASS functions for themes
+[source,ruby]
+require './stylesheets/_themes/lib/functions.rb'
+
+.Remove unnecessary files
+ $ rm stylesheets/{_normalize.scss,_settings.scss}
+
+IMPORTANT: Also remove the normalize.css link from +_layouts/base.html.haml+.
+
+.Edit +_layouts/base.html.haml+ to assign id to main content
+[source,haml]
+----
+  #content.row
+    .large-12.columns
+      ~ content
+----
+
+.Edit +index.html.haml+ to remove horizontal rule under page title and format site name
+[source,haml]
+----
+.row
+  .large-12.columns
+    %h1 Welcome to #{Asciidoctor.render site.name, :doctype => :inline}!
+----
+
+.Edit +_layouts/base.html.haml+ to format site name
+[source,haml]
+----
+      %li.name
+        %h1
+          %a(href="#{site.ctx_path}/")=Asciidoctor.render(site.name, :doctype => :inline)
+----
+
+.Clean and preview site to see changes
+ $ rake clean preview
+
+// TODO insert screenshot (shows larger h1 and lead paragraph)
+
+// TODO show what happens if awestruct-layout is not set
+
+== Activate posts extension (blog, news, etc)
+
+.Create the posts directory in the project root
+ $ mkdir posts
+
+.Enable the Posts extensions and Partial helper in +_ext/pipeline.rb+
+[source,ruby]
+----
+Awestruct::Extensions::Pipeline.new do
+  helper Awestruct::Extensions::Partial
+
+  extension Awestruct::Extensions::Posts.new '/posts'
+  extension Awestruct::Extensions::Paginator.new :posts, '/index', :page_name => 'posts/page', :per_page => 5
+  extension Awestruct::Extensions::Atomizer.new :posts, '/feed.xml', :num_entries => 10
+end
+----
+
+.Create a directory for partials (i.e., include files) in the project root
+ $ mkdir _partials
+
+.Create a partial, +_partials/post.html.haml+, to layout the post
+[source,haml]
+----
+%article.post
+  %header.post-head
+    %h1.title
+      %a{:href=>"#{site.ctx_path}#{page.post.url}"}=page.post.title
+    %h4
+      %em by
+      %a.author{:href=>page.post.author_url || site.author_url}
+        %img{:src=>"#{page.post.author_url || site.author_url}.png"}(width=24 height=24)
+        =page.post.author || site.author
+      on
+      %time.pubdate{:datetime=>page.post.date.strftime '%FT%T%:z'}=page.post.date.strftime '%B %e, %Y'
+  .post-body
+    =page.post.content
+----
+
+.Create the layout for a post, +_layout/post.html.haml+
+[source,haml]
+----
+---
+layout: base
+---
+=partial 'post.html.haml', :post => page
+----
+
+.Create the layout for pagination, +_partials/pagination.html.haml+
+[source,haml]
+----
+- paginator = page.posts
+.pagination-centered
+  %ul.pagination
+    - if paginator.previous_page
+      %li.arrow
+        %a{:href=>"#{site.ctx_path}#{paginator.previous_page.url}"}
+          %i.icon-step-backward
+    - else
+      %li.arrow.unavailable
+        %a{:href=>'#'}
+          %i.icon-step-backward
+    %li #{paginator.current_page_index + 1} of #{paginator.pages.size}
+    - if paginator.next_page
+      %li.arrow
+        %a{:href=>"#{site.ctx_path}#{paginator.next_page.url}"}
+          %i.icon-step-forward
+    - else
+      %li.arrow.unavailable
+        %a{:href=>'#'}
+          %i.icon-step-forward
+----
+
+.Edit +index.html.haml+ to show all posts on front page
+[source,haml]
+----
+---
+layout: base
+---
+.row
+  .large-12.columns
+    %h1 Welcome to #{Asciidoctor.render site.name, :doctype => :inline}!
+
+.row
+  .large-12.columns.posts
+    - page.posts.each do |post|
+      =partial 'post.html.haml', :post => post, :listing => true
+    =partial 'pagination.html.haml', :paginator => page.posts
+----
+
+.Create a post, +posts/docs-workshop-oscon-2013.adoc+
+[source,asciidoc]
+----
+= Docs Workshop at OSCON 2013
+Author Name
+2013-07-22
+:awestruct-tags: [conference, oscon]
+
+Content of first post, reporting from OSCON!
+----
+
+TIP: The default layout for a post is +post+, so you don't have to specify it in the AsciiDoc header.
+
+.Add Atom feed to +_layouts/base.html.haml+
+[source,haml]
+----
+%link{:rel=>'alternate', :type=>'application/atom+xml', :href=>"#{site.ctx_path}/feed.xml"}
+----
+
+.Clean and preview site to see changes
+ $ rake clean preview
+
+.Enable Tagger extension below Paginator in +_ext/pipeline.rb+
+[source,ruby]
+extension Awestruct::Extensions::Tagger.new :posts, '/index', 'posts/tag', :per_page => 5
+
+.Add tag links to bottom of +_partials/post.html.haml+
+----
+  %footer.post-footer
+    - if page.post.tags
+      .tags
+        %i.label.icon-tags
+        =" #{page.post.tag_links}"
+----
+
+.Clean and preview site to see changes
+ $ rake clean preview
+
+== Extensionless URLs
+
+.Edit +_ext/pipeline.rb+ to activate Indexifier extension
+[source,ruby]
+extension Awestruct::Extensions::Indexifier.new
+
+IMPORTANT: The Indexifier extension must come _before_ the Atomizer extension
+
+CAUTION: Relative links must now be prefixed with +../+ to escape from directory holding the "indexified" page.
+
+.Edit +_layouts/base.html.haml+ to update navigation links
+[source,haml]
+----
+        %li.divider
+          %li
+            %a{:href=>"#{site.ctx_path}/about"} About
+----
+
+.Clean and preview site to see changes
+ $ rake clean preview
+
+== Using source code in your site
+
+.Edit +_config/site.yml+ to configure AsciiDoc source highlighter
+[source,yaml]
+asciidoctor:
+  :safe: safe
+  :attributes:
+    sitename: WriteAdapt
+    base_url: ''
+    ctx_path: ''
+    idprefix: ''
+    idseparator: '-'
+    sectanchors: ''
+    icons: font 
+    source-highlighter: coderay
+    coderay-css: style
+
+.Add CodeRay gem, +coderay+, to +Gemfile+
+[source,ruby]
+----
+gem 'coderay'
+----
+
+.Update gems
+ $ bundle update
+
+.Add some source code
+[source,asciidoc]
+....
+[source,ruby]
+----
+require 'asciidoctor'
+
+puts Asciidoctor.render('Write__Adapt__', :doctype => :inline)
+----
+....
+
+=== Images
+
+.Make a directory for images in the project root
+ $ mkdir images
+
+.Download some example images into the images directory
+http://www.flickr.com/photos/oreillyconf/sets/72157630609904796[OSCON Photos]
+
+.Include an inline image in a post written in AsciiDoc
+[source,asciidoc]
+----
+image:oscon-mascot.jpg[role="thumb right"] I'm excited to be at OSCON 2013.
+I'm currently attending a workshop on collaborative documentation.
+We're learning about how to:
+
+- setup a static website with Awestruct
+- compose content in AsciiDoc
+- collaborate on content using git and GitHub
+- publish the website to GitHub Pages
+- and lots more!
+
+In fact, this website was launched during the workshop.
+----
+
+NOTE: The default images directory is +/images+.
+You don't have to include the images directory in the image path.
+Asciidoctor will automatically resolve the image relative to the images directory.
+This also allows you to change the location of the images directory (or URL) without needing to update your content.
+
+.Include a block image in a post written in AsciiDoc
+[source,asciidoc]
+----
+I can't wait to show my site to these GitHub guys.
+They'll be proud ;)
+
+[caption=""]
+.GitHub trainers, Matthew and Tim
+image::github-trainers.jpg[]
+----
+
+.Add +imagesdir+ attribute below document title to enable images in GitHub preview
+[source,asciidoc]
+:imagesdir: ../images
+
+.Conditional hack to get post title to show on GitHub
+[source,asciidoc]
+----
+ifndef::icons[]
+[float]
+= Docs Workshop at OSCON 2013
+endif::icons[]
+----
+
+=== Videos
+
+.Include a video in a post written in AsciiDoc
+[source,asciidoc]
+----
+.Mozilla Firefox Manifesto
+[poster="http://www.mozilla.org/images/about/poster.jpg"]
+video::http://videos-cdn.mozilla.net/brand/Mozilla_Firefox_Manifesto_v0.2_640.webm[]
+----
+
+CAUTION: The video macro is somewhat limited at the moment.
+It can't yet handle YouTube videos.
+You could use a pass through block to insert HTML directly.
+
+== Add Disqus comments
+
+.Add Disqus extension as last entry in +_ext/pipeline.rb+
+[source,ruby]
+extension Awestruct::Extensions::Disqus.new
+
+.Edit +_config/site.yml+ to configure Disqus
+[source,yaml]
+disqus: writeadapt
+disqus_generate_id: true
+disqus_developer: true
+
+.Edit +_partials/post.html.haml+ to add Disqus comments
+[source,haml]
+----
+  - if !page.listing
+    %hr
+    - if site.disqus && !site.disqus_developer
+      #comments
+        =page.post.disqus_comments
+----
+
+== Add Google Analytics
+
+.Edit +_ext/pipeline.rb+
+[source,ruby]
+helper Awestruct::Extensions::GoogleAnalytics
+
+////
+.Edit +_layouts/base.html.haml+
+[source,haml]
+----
+- if site.google_analytics
+  =google_analytics_async
+----
+////
+
+Add analytics key to the configuration:
+
+.Edit +_config/site.yml+
+google_analytics: UA-00000000-1
+
+.Clean and preview site to see changes
+ $ rake clean preview
+
+== Chunked content
+
+=== Post excerpt
+
+[source,asciidoc]
+----
+:excerpt: Excerpt of post.
+:awestruct-excerpt: {excerpt}
+
+{excerpt}
+----
+
+[source,haml]
+----
+  .post-body
+    - if page.listing
+      %p=page.post.excerpt || summarize(html_to_text(page.post.content), 100)
+      %p
+        %a.small.secondary.button{:href=>"#{site.ctx_path}#{page.post.url}"} Read more...
+    - else
+      =page.post.content
+----
+
+=== Post image
+
+// TODO (see Brian's blog)
+
+== Custom domain name
+
+.Edit +CNAME+ at project root
+yourdomain.com
+
+NOTE: You'll need to point the DNS for your domain at the GitHub Pages server.
+See https://help.github.com/articles/setting-up-a-custom-domain-with-pages[Setting up a custom domain with GitHub Pages] for instructions.
