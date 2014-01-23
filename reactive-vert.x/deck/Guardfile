@@ -1,31 +1,23 @@
-require 'asciidoctor'
+require 'find'
 require 'erb'
-    
-adoc_attribs = {"sectanchors" => true, "toclevels" => 3, "numbered" => true, "icons" => "font", "docinfo" => true, "experimental" => true, "source-highlighter" => "coderay", "stylesdir" => "./styles"}
+require 'asciidoctor'
+require 'asciidoctor/cli/options'
+require 'asciidoctor/cli/invoker'
 
-#adoc_attribs = {"sectids!" => true, "experimental" => true, "icons" => "font", "imagesdir" => "../images", "source-highlighter" => "highlightjs", "language" => "no-highlight", "macros-on" => true, "subs" => "macros", "caption-off" => true, "caption" => "", "title-off" => true, "title" => "", "caption" => "",
-#"dzslides-aspect" => "16-9",
-#"dzslides-style"  => "asciidoctor",
-#"dzslides-transition" =>  "fade",
-#"dzslides-fonts"  => "family=Neuton:400,700,800,400italic|Cedarville+Cursive",
-#"dzslides-highlight"  => "asciidoctor",
-#"next-label"  => "pass:quotes,attributes[*Next* [icon-caret-right]'{zwsp}']"
-#}
+notification :off
 
-#sub_adoc_attribs = {"sectanchors" => true, "toclevels" => 3, "numbered" => true, "icons" => "font", "docinfo" => true, "experimental" => true, "source-highlighter" => "coderay", "stylesdir" => "../styles"}
+#asciidoc -T asciidoctor-backends/slim -a data-uri -a linkcss!
+group :development do
+  guard :shell do
+    watch (/^.+\.adoc$/) { |m| Asciidoctor::Cli::Invoker.new(%W(-b dzslides -T asciidoctor-backends/slim/dzslides #{m[0]})).invoke! }
+  end
 
-guard 'shell' do
-  watch(/^.*\.adoc$/) {|m|
-    #Asciidoctor.render_file(m[0], {:in_place => true, :header_footer => true, :attributes => adoc_attribs })
-    Asciidoctor.render_file('slides/slides.adoc', {:in_place => true, :header_footer => true, :attributes => adoc_attribs })
-  }
-  
-  watch(/^([a-zA-Z_]*)\/.*\.adoc$/) {|m|
-    #Asciidoctor.render_file(m[0], {:in_place => true, :header_footer => true, :attributes => sub_adoc_attribs })
-    Asciidoctor.render_file('slides/slides.adoc', {:in_place => true, :header_footer => true, :attributes => sub_adoc_attribs })
-  }
-end
 
-guard 'livereload' do
-  watch(%r{^.+\.(css|js|html)$})
+  ## Look for specified files in the current and child directories.
+  ## `find` requires Ruby 1.9 or greater.
+  if Find.find(Dir.pwd).detect{|dir|dir=~/.+\.(css|js|html?|php|inc|theme)$/}
+    guard :livereload do
+      watch(%r{.+\.(css|js|html?|php|inc|theme)$})
+    end
+  end
 end

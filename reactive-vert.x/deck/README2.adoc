@@ -17,5 +17,6 @@ To generate slides, execute:
 
 ```
 asciidoctor -b dzslides -T asciidoctor-backends/slim/dzslides slides.adoc --trace
+open slides.html
 ```
 

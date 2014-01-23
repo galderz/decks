@@ -1,153 +1,527 @@
-= _Easier_ Documentation, _Simpler_ Websites & _Faster_ Collaboration
-Dan Allen <https://twitter.com/mojavelinux[@mojavelinux]>; Sarah White <https://twitter.com/carbonfray[@carbonfray]>
+= _Reactive_ Functional Programming with _Vert.x_
+Galder Zamarreño ; Red Hat Inc
 include::attributes.adoc[]
+
+:experimental:
+:toc2:
+:sectanchors:
+:idprefix:
+:idseparator: -
+:icons: font
+:source-highlighter: coderay
 
 == !
 
-"Every minute an editor spends managing presentational tweaks is one they can’t spend on critical stories."
--- Jeff Eaton
+[.statement]
+Learn how to build _reactive_ applications using functional programming with _Vert.x_
 
 [NOTE]
 [role="speaker"]
 ====
-your speaker notes here
+* In this presentation today, you will learn how to build reactive
+applications using functional programming with Vert.x.
+* To build reactive applications, we need to apply a set of patterns that
+are commonly known as Reactive Programming
 ====
 
 [.topic.intro]
-== *Build* your site
+== What is *Reactive* Programming?
+
+[NOTE]
+[role="speaker"]
+====
+* So, what is Rective Programming?
+* Reactive programming describes a set of programming patterns and techniques
+that have become increasingly important over last few years
+====
+
+[.topic.source]
+== Requirements 10 Years Ago
+
+====
+* _10s_ of Servers
+* Response time in _seconds_
+* Maintenance window of _hours_
+* Data volume in _GBs_
+====
+
+[NOTE]
+[role="speaker"]
+====
+* Reactive programming has become important because of changing requirements
+* 10 years ago, a large installation would have 10s of servers
+* Response times measured in seconds,
+* ~2 hours maintenance times
+* Data volumes measured in GB
+====
+
+[.topic.source]
+== Requirements Nowadays
+
+====
+* _1000s_ of Servers
+* Response time in _milliseconds_
+* _No_ maintenance window
+* Data volume in _TBs_, even _PBs_
+====
+
+[NOTE]
+[role="speaker"]
+====
+* Nowadays, a large or cloud installation would have 1000s of nodes
+* Users expect millisecond response times
+* There should be no downtime with 24/7 availability
+* Data volumes are in TBs and sometimes even reaching PBs
+* Initially, this was the domain of innovative, internet-driven, companies like Google or Twitter
+* But these demans appearing in other industries, starting with the finance and telecomunications and others are following
+====
 
 == !
 
 [.statement]
-*Automate!*
-Everything you type in a terminal is eventually a task you don't have to do
+New requirements need *new architectures*
+
+[NOTE]
+[role="speaker"]
+====
+* These new requirements need new architectures that can satisfy the needs
+====
 
 == !
 
 [.statement]
-{next-label} +
-Install Awestruct
+Classic architectures, consisting of _managed servers_ or containers,
+_are not ready_ for these new requirements
 
-include::install-awestruct.adoc[tags=content]
-
-== !
-
-[.statement]
-{next-label} +
-Setup a new Awestruct project
-
-include::setup-new-website-project-with-awestruct.adoc[tags=content]
+[NOTE]
+[role="speaker"]
+====
+* The classic architecture is the Java Enterprise Server consisting of managed servers and application containers
+* Scaling was done buying large servers
+* Or clustering of big servers was complex and often used expensive/propietary solutions
+====
 
 == !
 
 [.statement]
-{next-label} +
-Install Rake and Bundler
+We need *Reactive applications!*
 
-include::install-rake-and-bundler.adoc[tags=content]
+[NOTE]
+[role="speaker"]
+====
+* What we need is reactive applications!
+====
+
+[.topic.source]
+== Reactive applications
+
+====
+* -> are _event-driven_
+* -> are _scalable_
+* -> are _resilient_
+* -> are _responsive_
+====
+
+[NOTE]
+[role="speaker"]
+====
+*
+====
+
+== !
+
+"reactive : +
+readily responsive to a stimulus"
+-- Merriam-Webster
+
+[NOTE]
+[role="speaker"]
+====
+* Merriam-Webster deﬁnes reactive as “readily responsive to a stimulus”,
+* i.e. its components are “active” and always ready to receive events.
+====
+
+[.topic.source]
+== Readily responsive to a stimulus
+
+====
+* -> React to events (_event-driven_)
+* -> React to load (_scalable_)
+* -> React to failures (_resilient_)
+* -> React to users (_responsive_)
+====
+
+[NOTE]
+[role="speaker"]
+====
+* In the world of software, a system is reactive when:
+* It can react to events, so it's event-driven
+* It can react to changing amounts of load, so it's scalable
+* It can react to failures, so it's resilient
+* It should react to its users, so it's responsive
+====
+
+[.topic.source]
+== The Reactive Traits
+
+image::full-reactive.png[]
+
+.source
+....
+reactivemanifesto.org/images/full-reactive.png
+....
+
+[NOTE]
+[role="speaker"]
+====
+* Being event-driven is a technical property that enables the properties of being scalable and resilient
+* All three properties together enable systems that are responsive
+====
+
+[.topic.source]
+== Non Event-Driven
+
+Before, systems composed of multiple threads, +
+communicating via shared mutable state +
+-> _strong coupling_ and _hard to compose_ +
+
+image::chains.jpg[width=240]
+....
+flickr.com/photos/althewebmaster/532160680
+....
+
+[NOTE]
+[role="speaker"]
+====
+* Let's start analyzing what event-drive means
+* Up until now, a lot of concurrent systems have been constructed using multiple threads which communicated via shared, mutable, state
+* This lead to high degree of coupling and also such systems were hard to compose
+====
+
+[.topic.source]
+== Event-Driven
+
+Systems composed of _loosely coupled_ event handlers, +
+communicating via _asynchronous events_, +
+without blocking!
+
+image::loosely-coupled.jpg[width=240]
+....
+flickr.com/photos/bru/129437516
+....
+
+[NOTE]
+[role="speaker"]
+====
+* Event-driven systems are composed from loosely coupled event handlers
+* Events in such system can be handled asynchronously and they do not incur any blocking!
+* And because there's no blocking, resources can be utilised much more efficiently.
+====
+
+[.topic.source]
+== Scalable
+
+An application is _scalable_ when it can handle increased load without
+affecting its usability
+
+image::scalable.jpg[width=320]
+....
+flickr.com/photos/ybite/1094585685
+....
+
+[NOTE]
+[role="speaker"]
+====
+* An application is scalable if the application can be expanded according to its usage
+* Typically we distinguish two directions of scaling:
+====
+
+[.topic.source]
+== Scala Up
+
+Use paralellism in _multi-core_ systems +
+to handle load increases +
+
+To scale up efficiently, +
+_shared mutable state_ must be _minimised_
+
+image::multi-core.jpg[width=240]
+....
+flickr.com/photos/viagallery/6925196395
+....
+
+
+[NOTE]
+[role="speaker"]
+====
+* scale-up: use of paralellism in multi-core systems, which become more and more common in computers today...
+* Importance for scale up: minimise shared mutable state, since it impacts the ease or efficiency of scaling
+====
+
+[.topic.source]
+== Scala Out
+
+Use of _multiple server nodes_ +
+to handle load increases +
+
+To scale out easily, _location transparency_ required +
+to remove dependency on node location
+
+image::server-farm.jpg[width=200]
+....
+flickr.com/photos/mrfaber/247946146
+....
+
+[NOTE]
+[role="speaker"]
+====
+* scale-out: use of multiple nodes, often in data centre.
+* Importance for scale out: the property of "location transparency"
+* It should not matter where a node is located, it could be on same computer,
+or in the internet, the functionality should remain the same
+====
+
+[.topic.source]
+== Resilient
+
+An application is _resilient_ when it can recover quickly from failures, i.e.
+SW/HW/network failures
+
+image::software-failure.jpg[width=320]
+....
+flickr.com/photos/74157931@N00/4005857555
+....
+
+[NOTE]
+[role="speaker"]
+====
+* An application is resilient if it can recover quickly from failures
+* Failures could be software failures, such as throwing an exception
+* Or hardware failures, computer going down
+* Or connection failures, internet/network connection going down
+====
+
+[.topic.source]
+== Resilient
+
+_Resilience_ cannot be an afterthought, it needs to be part of the design from
+the beginning
+
+Resilient systems need: +
+-> _Loosely coupled_ components +
+-> Strong _encapsulation of state_ +
+-> Pervasive _supervisor_ hierarchies +
+-> _Failover_ via scalability +
+
+[NOTE]
+[role="speaker"]
+====
+* Typically, resilience cannot be added as an afterthought, it needs to be part of the design from the beginning
+* With application servers, most people start with a single node
+* And when things start to fail, they add clustering, but it's often too late to do so
+* And it can lead to re-thinking of the application
+* Important techniques for building resilient systems are:
+* Keeping your components loose coupled
+* Having a strong encapsulation of mutable state
+* Having pervasive supervisor hierarchies
+* Finally, being scalable gives you multiple nodes, so they can fail and
+the system has to cope with that
+====
+
+[.topic.source]
+== Responsive
+
+An application is _responsive_ if it provides a rich, enganging, collaborative,
+_real-time interaction_ with its users, _regardless of load or failures_
+
+Being event-driven, scalable and resilient help applications be responsive,
+but...
+
+[NOTE]
+[role="speaker"]
+====
+* Finally, an application is responsive if it provides a rich, real-time
+interaction with its users even under load and in the presence of failures
+* Responsive applications can be built on an event-driven, scalable,
+and resilient architecture
+====
+
+[.topic.source]
+== Keeping It Responsive
+
+Need to pay careful attention to +
+system design, algorithms used, back-pressure...etc
+
+i.e. If any layer _blocks_, even consumption can stall, +
+_increasing latency_ and _reducing scalability_ :(((
+
+image::frustration.jpg[width=200]
+....
+flickr.com/photos/evilerin/3796279865
+....
+
+[NOTE]
+[role="speaker"]
+====
+* That doesn't automatically lead to a responsive application, you still need
+to pay careful attention to algorithms, software designs, back-pressure,
+and many other details
+* But, being event-driven, scalable and resilient are important, even
+necessary, building blocks, to arrive to a responsive application
+* If any of the layers makes blocking calls, the event consumption stalls and
+it leads to increased latency and reduced scalability...
+* What do we mean by blocking? Add examples...
+====
 
 == !
 
 [.statement]
-{next-label} +
-Setup Git repository for project
+An application must be *reactive* from top to bottom
 
-include::setup-git-repository-for-project.adoc[tags=content]
+[NOTE]
+[role="speaker"]
+====
+* An application must be reactive from top to bottom
+====
 
 == !
 
 [.statement]
-{next-label} +
-Configure website metadata
+Learn how to build _reactive_ applications using functional programming with _Vert.x_
 
-include::configure-website-name-title-author-and-organization.adoc[tags=content]
+[NOTE]
+[role="speaker"]
+====
+* Let's go back to the objective of today's presentation
+* We now know what an reactive application is and its traits
+* Next, we are going to see what is Vert.x
+* and how to build reactive applications with Vert.x
+====
 
 [.topic.intro]
-== Write in *plain text*
+== What is *Vert.x*?
 
-== !
-
-"I do not believe that on-page, in-context editing should be the primary edit mode of a CMS."
--- Deane Barker
-
-== !
-
-[.statement]
-{next-label} +
-Activate AsciiDoc content
-
-include::activate-asciidoc-content.adoc[tags=content]
+[NOTE]
+[role="speaker"]
+====
+* So, what is Vert.x?
+====
 
 == !
 
 [.statement]
-{next-label} +
-Configure theme for website and AsciiDoc content
+Vert.x is a _polyglot_ application _development_ framework for the JVM
+enabling you to build _reactive applications_
 
-include::configure-theme-for-asciidoc-and-website.adoc[tags=content]
+[NOTE]
+[role="speaker"]
+====
+* A polyglot application development framework
+* Promotes applications written in a Reactive Programming style
+====
+
+[.topic.source]
+== Vert.x
+
+====
+* -> is _event-driven_
+* -> is _scalable_
+* -> is _resilient_
+* -> enables _responsive_ applications
+====
+
+[NOTE]
+[role="speaker"]
+====
+* Vert.x is event-driven
+* Vert.x is scalable
+* Vert.x is resilient
+* Vert.x enables responsive applications :)
+====
+
+[.topic.source]
+== Vert.x is event-driven
+
+The unit of execution is a _Verticle_ +
+which _reacts to event messages_, +
+and communicates _sending event messages_
+
+image::event-driven.jpg[width=240]
+....
+flickr.com/photos/behind-the-lense/3350188796
+....
+
+[NOTE]
+[role="speaker"]
+====
+* Event-driven programming style
+* Verticle is the execution unit of Vert.x
+* Verticles react to event messages
+* Verticles communicate via event message passing
+====
+
+[.topic.source]
+== Single Threaded Verticles
+
+_Verticles_ consume events one at the time, +
+and they are _single threaded_, +
+so you _can keep mutable state_ inside the Verticle
+
+[NOTE]
+[role="speaker"]
+====
+* Executed by a single thread at the time
+* You can keep mutable state at the Verticle level, with the knowledge that you don't need to worry about concurrency
+* IOW, you can keep a hash map, a linked list, instead of a ConcurrentHashMap or CopyOnWriteArrayList
+====
 
 == !
 
 [.statement]
-{next-label} +
-Convert a Markdown page to AsciiDoc
+Java Verticle _demo_
 
-include::convert-markdown-to-asciidoc.adoc[tags=content]
+[.topic.source]
+== ...
 
-== !
+[NOTE]
+[role="speaker"]
+====
+*
+====
 
-[.statement]
-{next-label} +
-Activate posts extension
 
-include::activate-posts-extension.adoc[tags=content]
+[.topic.source]
+== ...
 
-[.topic.intro]
-== *Publish* your site
+[NOTE]
+[role="speaker"]
+====
+*
+====
 
-== !
 
-[.statement]
-{next-label} +
-Deploy to GitHub Pages
+[.topic.source]
+== ...
 
-include::deploy-to-github-pages.adoc[tags=content]
+[NOTE]
+[role="speaker"]
+====
+*
+====
 
-[.topic.intro]
-== *Content* Write, Read and Chunk
 
-include::content.adoc[tags=content]
+[.topic.source]
+== ...
 
-== !
+[NOTE]
+[role="speaker"]
+====
+*
+====
 
-[.statement]
-{next-label} +
-Chunk some content
-
-include::chunked-content.adoc[tags=content]
-
-== !
-
-[.statement]
-{next-label} +
-Adding different types of content
-
-include::using-source-code-in-website.adoc[tags=content]
-
-[.topic.intro]
-== *Write* content together
-
-== !
-
-[.statement]
-{next-label} +
-Encourage collaboration
-
-include::add-sidebar-and-collaborate-buttons.adoc[tags=content]
 
 [.topic.ending, hrole="name"]
-== Dan Allen{nbsp}&middot;{nbsp}Sarah White
+== Galder Zamarreño
 
 [.footer]
-[icon-twitter]'{zwsp}' @mojavelinux
-[icon-twitter]'{zwsp}' @carbonfray
+[icon-twitter]'{zwsp}' @galderz
