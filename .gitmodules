@@ -1,0 +1,6 @@
+[submodule "data-challenges/asciidoctor-backends"]
+	path = data-challenges/asciidoctor-backends
+	url = https://github.com/asciidoctor/asciidoctor-backends
+[submodule "data-challenges/dzslides"]
+	path = data-challenges/dzslides
+	url = https://github.com/mojavelinux/dzslides.git
