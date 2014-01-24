@@ -440,7 +440,7 @@ enabling you to build _reactive applications_
 ====
 
 [.topic.source]
-== Vert.x is event-driven
+== Vert.x is Event-Driven
 
 The unit of execution is a _Verticle_ +
 which _reacts to event messages_, +
@@ -467,6 +467,11 @@ _Verticles_ consume events one at the time, +
 and they are _single threaded_, +
 so you _can keep mutable state_ inside the Verticle
 
+image::queue.jpg[width=240]
+....
+flickr.com/photos/hktang/4243300265
+....
+
 [NOTE]
 [role="speaker"]
 ====
@@ -475,10 +480,408 @@ so you _can keep mutable state_ inside the Verticle
 * IOW, you can keep a hash map, a linked list, instead of a ConcurrentHashMap or CopyOnWriteArrayList
 ====
 
-== !
+[.topic.source]
+== Java Verticle demo
 
-[.statement]
-Java Verticle _demo_
+[source,java]
+.+HelloWorld.java+
+----
+import org.vertx.java.core.Handler;
+import org.vertx.java.core.http.HttpServerRequest;
+import org.vertx.java.platform.Verticle;
+
+public class HelloWorld extends Verticle {
+  public void start() {
+    vertx.createHttpServer().requestHandler(new Handler<HttpServerRequest>() { <1>
+      public void handle(HttpServerRequest req) {
+        req.response().end("<body><h1>Hello World from Java!</h1></body>"); <2>
+      }
+    }).listen(8080);
+  }
+}
+----
+<1> Create an HTTP server, add a request event handler
+<2> Reply with the same message to all incoming requests
+
+[NOTE]
+[role="speaker"]
+====
+* Event handling not new, event handling traditionally done using call-backs
+* Here's an example of a Java Verticle
+* Creates an HTTP server that listens in port 8080 and adds a request handler
+* Reply with the same message to all incoming requests
+* Let's run this demo -> Go to `Terminal`
+====
+
+[.topic.source]
+== Event-Driven, The Functional Way
+
+Functional style better for _event-driven_ systems +
+_Scala_ is a great language to write Vert.x apps, +
+the _functional_ way
+
+image::scala.png[width=120]
+
+[NOTE]
+[role="speaker"]
+====
+* Dealing with call-backs in the imperative way is bulky
+* Functional programming style more suited for event-driven systems
+* Scala offers a mature, established way, to do functional programming today, without having to wait for Java8
+* It runs on the JVM, as a normal library, and has excellent support in all major IDEs
+====
+
+[.topic.source]
+== Scala Verticle Demo
+
+[source,scala]
+.+HelloWorld.scala+
+----
+vertx.createHttpServer.requestHandler { req: HttpServerRequest => <1>
+  req.response.end("Hello World from Scala!") <2>
+}.listen(8080)
+----
+
+<1> Create an HTTP server, passes a function to execute for each request
+<2> Reply with the same message to all incoming requests
+
+[NOTE]
+[role="speaker"]
+====
+* Here's a Scala version of the previous Hello World verticle
+* Much less verbose, and function passing works much better here
+* A similar thing might be doable with Java 8, but Scala's offering goes well beyond just passing functions
+* A key aspect of functional programming is composability
+* iow, when I get an event, do this, then do this, then do this...
+* In Java, this will be done adding callbacks after callbacks
+* Scala offers nice syntatic sugar to make dealing with callbacks more bearable :)
+* I cannot yet show an example of this, but as soon as we have 1-to-1 mapping with Java API, we'll start working on it :)
+* Let's run this demo -> Go to `Terminal`
+====
+
+[.topic.source]
+== Polyglot
+
+image:scala.png[width=96] image:java.png[width=128] image:javascript.png[width=96]
+image:jruby.png[width=356] image:groovy.png[width=176] image:jython.png[width=176]
+image:clojure.gif[width=128] image:php.png[width=232]
+
+
+[NOTE]
+[role="speaker"]
+====
+* Apart from Scala and Java, Vert.x offers language extensions in other languages
+* Some allow more functional styles than others
+* Some are statically typed and others dynamically typed
+* So, no matter what you preferences are, Vert.x's got you covered!
+====
+
+[.topic.source]
+== Vert.x is Scalable
+
+Verticles can communicate in-VM or inter-VM +
+regardless, they communicate the same way +
+providing _location transparency_
+
+image::location-transparency.jpg[width=240]
+....
+en.wikipedia.org/wiki/File:Teliris_VL_Executive.jpg
+....
+
+[NOTE]
+[role="speaker"]
+====
+* Vert.x not only supports verticles talking to each in other in the same JVM,
+but it allows them to be in different places in the network
+* Regardless where they are, you communicate with them in the same way
+* That gives you "location transparency", which we saw was a key characteristic of scalable applications
+* To enable this, the event bus which carries the events can be clustered
+====
+
+[.topic.source]
+== Enabling Real-Time Web Applications
+
+Vert.x enables building _real-time_ web apps +
+where verticles talk to _Javascript_ clients +
+such as _HTTP browsers_
+
+image::real-time.jpg[width=240]
+....
+flickr.com/photos/31029865@N06/6646814881
+....
+
+[NOTE]
+[role="speaker"]
+====
+* Vert.x Scalability is key for building "real-time" web applications
+* Because you can also develop verticles client side, written in Javascript
+* This way you can build very responsive web applications,
+with data being pushed from the server to the client
+* Client side, use whatever toolkit you want: AngularJS, straight JQuery...etc
+====
+
+[.topic.source]
+== Scalability Demo- Receiver
+
+[source,js]
+.+receiver.js+
+----
+var eb = require("vertx/event_bus");
+var console = require("vertx/console");
+
+eb.registerHandler("news-feed", function(message) { <1>
+  console.log('Received news: ' + message); <2>
+});
+----
+
+<1> Javascript verticle subscribes to a news feed
+<2> When a news message is received, it prints it to the console
+
+[NOTE]
+[role="speaker"]
+====
+* This demo is going to demonstrate the scalability of Vert.x
+* This is a Javascript verticle that subscribes to a news feed
+* When a news message is received, it prints it to the console
+* Let's run this demo -> Go to `Terminal`
+====
+
+[.topic.source]
+== Scalability Demo - Sender
+
+[source,scala]
+.+Sender.scala+
+----
+vertx.setPeriodic(1000, { timerID => <1>
+  vertx.eventBus.publish("news-feed", "News from Scala!") <2>
+})
+----
+
+<1> Register a periodic function to execute every second
+<2> The function sends a String message
+
+[NOTE]
+[role="speaker"]
+====
+* This is Scala sender which registers a function to be executed every second
+* This function sends a message to the news feed
+* Let's run it -> Go to `Terminal`
+====
+
+[.topic.source]
+== Scalability Demo - Bridge Server
+
+[source,js]
+.+bridge_server.js+
+----
+var vertx = require('vertx')
+
+var server = vertx.createHttpServer()
+
+server.requestHandler(function(req) {
+  var file = req.path() === '/' ? 'index.html' : req.path() <1>
+  req.response.sendFile("./" + file)
+})
+
+vertx.createSockJSServer(server).bridge({prefix: "/eventbus"}, [{}], [{}]) <2>
+
+server.listen(8080)
+----
+
+<1> Serve the static resources, `/` is mapped to `index.html`
+<2> Create a SockJS bridge which lets everything through (be careful!)
+
+[NOTE]
+[role="speaker"]
+====
+* In the final part of the scalability demo, we're going to take the scalability one step further
+* We're going to show how to get those events propagated to the client side
+* For that, we need a bridge server to push the messages via SockJs
+* Sockjs, an abstraction over WebSockets, that allows WebSockets-like
+behaviour even in browsers that do not support WebSockets
+* Sockjs bridges client-side event bus with server-side event bus
+====
+
+
+[.topic.source]
+== Scalability Demo - Browser
+
+[source,html]
+.+index.html+
+----
+<html>
+... <1>
+<div id="status"></div> <2>
+<script>
+  var eb = new vertx.EventBus("http://localhost:8080/eventbus");
+  eb.onopen = function() {
+    eb.registerHandler("news-feed", function(msg) { <3>
+      var str = "<code>" + msg + "</code><br>";
+      $('#status').prepend(str);
+    })
+  }
+</script></html>
+----
+
+<1> Add `jquery`, `sockjs` and `vertxbus` script libraries
+<2> Holder HTML where events will be written
+<3> Register a handler and update the `status` whenever a message is received
+
+[NOTE]
+[role="speaker"]
+====
+* This is a shortened version of the index.html file
+* It uses `jquery`, `sockjs` and `vertbux` javascript libraries to receive events
+* The javascript in the HTML registers a handler for the `news-feed`
+* When a message is received, it adds it to the `status` HTML holder
+====
+
+[.topic.source]
+== Vert.x is Resilient
+
+With _automatic failover_ of Vert.x modules, +
+_applications continue working_ in presence of failures +
+
+image::deviation.jpg[width=240]
+....
+flickr.com/photos/zigazou76/6312586663
+....
+
+[NOTE]
+[role="speaker"]
+====
+* Vert.x applications can continue working even in the presence of one or more parts failing
+* The way Vert.x currently supports it is by having automatic failover of deployed modules
+* Vert.x modules encapsulate code and resources of your application
+* You can have multiple modules in your application
+* You can have your modules running in a server and if you have more than one node, another node will take responsibility for those modules
+====
+
+[.topic.source]
+== Resilience Demo - Groovy Sender
+
+[NOTE]
+[role="speaker"]
+====
+*
+====
+
+[.topic.source]
+== Resilience Demo - Python Sender
+
+[NOTE]
+[role="speaker"]
+====
+*
+====
+
+[.topic.source]
+== Vert.x enables Responsive applications
+
+Applications should follow some _best practices_ +
+to keep their _applications responsive_ +
+i.e. _non-blocking_ from top to bottom!
+
+image::best-practice.jpeg[width=240]
+....
+cdnsba.org/wp-content/uploads/2010/10/iStock_000011308986XSmall.jpg
+....
+
+[NOTE]
+[role="speaker"]
+====
+* On top of what Vert.x provides to make your application responsive...
+* There are some best practices that need to be followed in order to make your Vert.x applications responsive
+* For an application to be responsive, it needs to be non-blocking from top to bottom
+====
+
+[.topic.source]
+== Never block in Verticle!
+
+CAUTION: `Thread.sleep()`
+
+CAUTION: `CountDownLatch.await()` or any other blocking operation from
+`java.util.concurrent`
+
+CAUTION: `while(true) {puts "King of the world!"}`
+
+CAUTION: Long-lived computationally intensive operations
+
+CAUTION: Blocking operations that might take a while (e.g. DB query)
+
+[NOTE]
+[role="speaker"]
+====
+* So, never block inside a Verticle!
+* If one of these layers does not participate—making blocking calls to the database, relying on shared mutable state, calling out to expensive synchronous operations
+* ... then the whole pipeline stalls and users will suffer through increased latency and reduced scalability
+====
+
+[.topic.source]
+== Keep Latency Consistent
+
+TIP: Amortize cost of expensive operations +
+(e.g. IO and concurrent data exchange)
+
+TIP: Systems are monitored with appropiate capacity planning
+
+TIP: Use bounded queues with back pressure (Little's law)
+
+image::helpful-tips.jpg[width=120]
+....
+drmommyonline.com/hub/wp-content/uploads/2012/12/helpful-tips.jpg
+....
+
+[NOTE]
+[role="speaker"]
+====
+* Use strategies to keep latency consistent regardless of load profile:
+* Under bursty traffic conditions reactive applications amortize the cost of expensive operations—such as IO and concurrent data exchange—
+* ... by applying batching combined with an understanding and consideration of the underlying resources to keep latency consistent.
+* Systems are monitored with appropriate capacity planning in place.
+* Queues are bounded with appropriate back pressure applied, queue lengths for given response constraints are determined by employing Little’s Law.
+* Little's law tells you when you should start backing off
+* Example: span off a different thread to deal with events until pressure has gone down
+====
+
+
+[.topic.source]
+== Summary
+
+[NOTE]
+[role="speaker"]
+====
+*
+====
+
+
+[.topic.source]
+== References
+
+NOTE: Vertx - http://vertx.io/
+
+NOTE: The Reactive Manifesto - http://www.reactivemanifesto.org/
+
+NOTE: Slides generated with Asciidoctor and DZSlides backend
+
+NOTE: Original slide template - Dan Allen & Sarah White
+
+[NOTE]
+[role="speaker"]
+====
+*
+====
+
+
+[.topic.source]
+== ...
+
+[NOTE]
+[role="speaker"]
+====
+*
+====
+
 
 [.topic.source]
 == ...
