@@ -1,0 +1,32 @@
+== Slides
+
+=== Requirements
+
+* Asciidoctor 0.1.4 or higher
+
+* Execute:
+...
+$ git submodule add https://github.com/asciidoctor/asciidoctor-backends data-challenges/asciidoctor-backends
+$ cd data-challenges/asciidoctor-backends
+$ git checkout e76aea86e7da174414a6d0c2e4d5553cd89bd226
+$ git submodule add https://github.com/mojavelinux/dzslides.git data-challenges/dzslides
+$ cd data-challenges/dzslides
+$ git checkout 80d406ab26900af519ba55ea25a80f59eb5b8237
+...
+
+=== Generating Slides
+
+Execute:
+....
+asciidoctor -b dzslides -T asciidoctor-backends/slim/dzslides slides.adoc
+open slides.html
+....
+
+=== Generating PDF
+
+Execute:
+....
+asciidoctor -b dzslides -T asciidoctor-backends/slim/dzslides -a linkcss -a data-uri slides.adoc
+deck2pdf --profile=dzslides slides.html slides.pdf
+open slides.pdf
+....
