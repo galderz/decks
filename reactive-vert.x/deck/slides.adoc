@@ -1,5 +1,5 @@
 = _Reactive_ Functional Programming with _Vert.x_
-Galder Zamarreño ; JUDCon India 2014
+JUDCon India 2014 ; Bangalore ; 2014/01/30
 include::attributes.adoc[]
 
 :experimental:
@@ -14,12 +14,13 @@ include::attributes.adoc[]
 == Galder Zamarreño
 
 ====
-* -- R&D Engineer, Red Hat Inc.
-* -- Vert.x Scala lead
-* -- Infinispan developer
+* [icon-user]'{zwsp}' '{zwsp}' R&D Engineer, Red Hat Inc.
+* [icon-user]'{zwsp}' '{zwsp}' Vert.x Scala lead
+* [icon-user]'{zwsp}' '{zwsp}' Infinispan developer
+* [icon-twitter]'{zwsp}' @galderz
 ====
 
-[NOTE ]
+[NOTE]
 [role="speaker"]
 ====
 * My name is Galder Zamarreño, and I’m a Red Hat R&D engineer
@@ -31,9 +32,9 @@ include::attributes.adoc[]
 == Agenda
 
 ====
-* -- What is Reactive?
-* -- What is Vert.x?
-* -- Reactive applications with Vert.x
+* [icon-note]'{zwsp}' What is Reactive?
+* [icon-note]'{zwsp}' What is Vert.x?
+* [icon-note]'{zwsp}' Reactive applications with Vert.x
 ====
 
 [NOTE]
@@ -108,7 +109,7 @@ Learn how to build _reactive_ applications using functional programming with _Ve
 * Nowadays, a large or cloud installation would have 1000s of nodes
 * Users expect `millisecond` response times
 * There should be no downtime with 24/7 availability
-* Data volumes are in TBs and sometimes even reaching `PB`s
+* Data volumes are in `TB` and sometimes even reaching `PB`
 * Initially, domain of innovative, internet-driven, companies like Google or Twitter
 * But demands appearing in other industries, first finance/telco, now others following
 ====
@@ -181,8 +182,8 @@ readily responsive to a stimulus"
 [NOTE]
 [role="speaker"]
 ====
-* Merriam-Webster deﬁnes reactive as _readily responsive to a stimulus_,
-* iow, its components are “active” and always ready to receive events
+* Merriam-Webster defines reactive as _'readily responsive to a stimulus'_,
+* IOW, its components are “active” and always ready to receive events
 ====
 
 [.topic.source]
@@ -221,6 +222,8 @@ reactivemanifesto.org/images/full-reactive.png
 * Being event-driven is a technical property ...
 * ... that enables the properties of being scalable and resilient
 * All three properties together enable systems that are responsive
+* Let's analyse each property individually +
+-- `PAUSE` --
 ====
 
 [.topic.source]
@@ -240,7 +243,7 @@ flickr.com/photos/althewebmaster/532160680
 ====
 * Let's start analyzing what event-driven means
 * Up until now, a lot of concurrent systems ...
-* ... have been constructed using multiple threads which communicated via shared, mutable, state
+* ... constructed using multiple threads which communicated via shared, mutable, state
 * This lead to high degree of coupling and also such systems were hard to compose
 ====
 
@@ -260,6 +263,7 @@ flickr.com/photos/bru/129437516
 [role="speaker"]
 ====
 * Event-driven systems are composed from loosely coupled event handlers
+* These event handlers consume one message at the time
 * Events in such system can be handled asynchronously and they do not incur any blocking!
 * And because there's no blocking, resources can be utilised much more efficiently
 ====
@@ -278,6 +282,7 @@ flickr.com/photos/ybite/1094585685
 [NOTE]
 [role="speaker"]
 ====
+* Another property of reactive applications is being scalable
 * An application is scalable if the application can be expanded according to its usage
 * Underground transport systems should be scalable ...
 * ... but there are some notable exceptions, such as the Tube in London ;)
@@ -326,7 +331,7 @@ flickr.com/photos/mrfaber/247946146
 [role="speaker"]
 ====
 * scale-out uses multiple nodes, often in the same data centre
-* Importance for scale out is the property of _location transparency_
+* Importance for scale out is the property of _'location transparency'_
 * It should not matter where a node is located...
 * ... it could be on same computer, or in the internet, the functionality should remain the same
 ====
@@ -345,8 +350,9 @@ flickr.com/photos/74157931@N00/4005857555
 [NOTE]
 [role="speaker"]
 ====
+* Another property of reactive applications is being resilient
 * An application is resilient if it can recover quickly from failures
-* Failures could be software failures, such as throwing an exception
+* Failures could be software failures, such as throwing an exception, or blue screen of death
 * Or hardware failures, computer going down
 * Or connection failures, internet/network connection going down
 ====
@@ -365,7 +371,8 @@ flickr.com/photos/genista/10127708
 [NOTE]
 [role="speaker"]
 ====
-* Resilience cannot be added as an afterthought, needs to be part of the design from the beginning
+* Resilience cannot be added as an afterthought ...
+* ... it needs to be part of the design from the beginning
 * With application servers, most people start with a single node
 * When things start to fail, they add clustering, but it's often too late to do so ...
 * ... since it often requires a re-thinking of the application
@@ -387,8 +394,7 @@ Resilient systems need: +
 * Keeping your components loose coupled
 * Having a strong encapsulation of mutable state
 * Having pervasive supervisor hierarchies
-* Finally, being scalable gives you multiple nodes, so they can fail and
-the system has to cope with that
+* Being able to scale out, because once you go beyond a single node, you can have failover
 ====
 
 [.topic.source]
@@ -403,8 +409,9 @@ but...
 [NOTE]
 [role="speaker"]
 ====
-* Finally, an application is responsive if it ...
-* ... provides a rich, real-time interaction with its users even under load and in the presence of failures
+* The final property of reactive applications is being response
+* An application is responsive if it ...
+* ... provides a rich, real-time interaction with its users even under load and in presence of failures
 * Responsive applications can be built on an event-driven, scalable, and resilient architecture
 ====
 
@@ -429,8 +436,6 @@ flickr.com/photos/evilerin/3796279865
 * You still need to pay careful attention to algorithms, SW designs, back-pressure, etc
 * But, being event-driven, scalable and resilient are important, ...
 * ... even necessary building blocks, to arrive to a responsive application
-* If any of the layers makes blocking calls ...
-* the event consumption stalls and it leads to increased latency and reduced scalability
 ====
 
 == !
@@ -443,8 +448,10 @@ from top to bottom
 [NOTE]
 [role="speaker"]
 ====
-* An application must be reactive from top to bottom!
--- `PAUSE` --
+* An application must be reactive from top to bottom! +
+* If any of the layers makes blocking calls ...
+* the event consumption stalls and it leads to increased latency and reduced scalability
+* -- `PAUSE` --
 ====
 
 == !
@@ -614,13 +621,12 @@ vertx.createHttpServer.requestHandler { req: HttpServerRequest => <1>
 [NOTE]
 [role="speaker"]
 ====
-* Here's a Scala version of the previous Hello World verticle
-* Much less verbose, and function passing works much better here
-* A similar thing might be doable with Java 8, but Scala's offering goes well beyond just passing functions
+* Here's a Scala version of the previous Hello World verticle, less verbose, function passing better
+* A similar thing will be doable w/ Java 8, but Scala's goes well beyond just passing functions
 * A key aspect of functional programming is composability: _Do this with event, then do this..._
 * In Java, this will be done adding callbacks after callbacks
 * Scala offers nice syntatic sugar to make dealing with callbacks more bearable :)
-* Example not ready yet, but as soon as we have 1-to-1 mapping with Java API, we'll start working on it :)
+* Not ready, but as soon as we have 1-to-1 mapping with Java API, we'll start working on it :)
 * Let's run this demo -> Go to `Terminal`
 ====
 
@@ -630,7 +636,6 @@ vertx.createHttpServer.requestHandler { req: HttpServerRequest => <1>
 image:scala.png[width=96] image:java.png[width=128] image:javascript.png[width=96]
 image:jruby.png[width=356] image:groovy.png[width=176] image:jython.png[width=176]
 image:clojure.gif[width=128] image:php.png[width=232]
-
 
 [NOTE]
 [role="speaker"]
@@ -656,10 +661,11 @@ en.wikipedia.org/wiki/File:Teliris_VL_Executive.jpg
 [NOTE]
 [role="speaker"]
 ====
+* Another key attribute of Vert.x is being scalable
 * Vert.x not only supports verticles talking to each in other in the same JVM ...
 * ... but it allows them to be in different places in the network
 * Regardless where they are, you communicate with them in the same way
-* Gives you _'location transparency'_, which is a key characteristic of scalable applications
+* Gives you _"location transparency"_, which is a key characteristic of scalable applications
 * To enable this, the event bus which carries the events can be clustered
 ====
 
@@ -678,7 +684,7 @@ flickr.com/photos/31029865@N06/6646814881
 [NOTE]
 [role="speaker"]
 ====
-* Vert.x Scalability is key for building "real-time" web applications
+* Vert.x Scalability is key for building _"real-time"_ web applications
 * Because you can also develop verticles client side, written in Javascript
 * This way you can build very responsive web applications ...
 * ... where data is pushed from the server to the client
@@ -861,7 +867,7 @@ def timer_handler(timer_id): <1>
     EventBus.publish('news-feed', 'News fom python!')
 
 vertx.set_periodic(1000, timer_handler) <2>
-....
+----
 
 <1> Define a function that sends an event to the `news-feed` subscription
 <2> Execute this function periodically, every 1 second
@@ -892,6 +898,7 @@ cdnsba.org/wp-content/uploads/2010/10/iStock_000011308986XSmall.jpg
 * Vert.x enables you to write responsive applications
 * On top of what Vert.x provides to make your application responsive...
 * ... there are some best practices that need to be followed to make your Vert.x apps responsive
+* For an application to be responsive, it needs to be non-blocking from top to bottom
 ====
 
 [.topic.source]
@@ -911,14 +918,11 @@ CAUTION: Blocking operations that might take a while (e.g. DB query)
 [NOTE]
 [role="speaker"]
 ====
-* For an application to be responsive, it needs to be non-blocking from top to bottom
-* So, never block inside a Verticle!
-* If one of these layers does not participate, e.g.
+* So, never block inside a Verticle! If one of these layers does not participate, e.g.
 ** Making blocking calls to the database
 ** Relying on shared mutable state
-** Calling out to expensive synchronous operations
-* ... then the whole pipeline stalls
-* ... users will suffer through increased latency and reduced scalability
+** Calling out to expensive synchronous operations, then the whole pipeline stalls
+** ... users will suffer through increased latency and reduced scalability
 ====
 
 [.topic.source]
@@ -940,20 +944,20 @@ drmommyonline.com/hub/wp-content/uploads/2012/12/helpful-tips.jpg
 [role="speaker"]
 ====
 * Use strategies to keep latency consistent regardless of load profile:
-* Under bursty traffic conditions apps amortize the cost of expensive operations (e.g. IO, concurrent data exchange)
-* ... applying batching combined w/ understanding and consideration of underlying resources to keep latency consistent
+* Under bursty traffic conditions, amortize cost of expensive ops (e.g. IO, concurrent data exch)
+* ... apply batching w/ understanding & consideration of resources to keep latency consistent
 * Monitor systems for appropriate capacity planning
-* Queues bounded with appropriate back pressure, queue lengths for response constraints determined employing Little’s Law
-* Little's law tells you when you should start backing off
-* Back pressure example: span off a different thread to deal with events until pressure has gone down
--- PAUSE -> Summary --
+* Queues bounded with appropriate back pressure ...
+* ... lengths for response constraints determined using Little’s Law (when to start backing off)
+* Back pressure e.g. span off a different thread to deal with events until pressure has gone down
+* *PAUSE!* ... -> Summary
 ====
 
 [.topic.source]
 == Summary
 
-====
 An application is reactive if it:
+====
 * -- reacts to events
 * -- is scalable
 * -- is resilient
@@ -973,9 +977,12 @@ An application is reactive if it:
 [.topic.source]
 == Summary
 
-_Vert.x_ is a polyglot application development framework for the JVM +
-promoting development of _reactive_ applications, +
-which are event-driven, scalable, resilient and responsive
+_Vert.x_ is an application development framework +
+which is polyglot and for the JVM +
+promoting development of _reactive_ applications: +
+event-driven, scalable, resilient and responsive
+
+image::vertx.png[width=320]
 
 [NOTE]
 [role="speaker"]
@@ -991,7 +998,9 @@ which are event-driven, scalable, resilient and responsive
 [.topic.source]
 == References
 
-NOTE: Vertx - http://vertx.io/
+NOTE: Vertx - http://vertx.io
+
+NOTE: Vert.x demos [icon-github]'{zwsp}' https://github.com/vert-x/vertx-examples
 
 NOTE: The Reactive Manifesto - http://www.reactivemanifesto.org/
 
@@ -999,7 +1008,8 @@ NOTE: Slides generated with Asciidoctor and DZSlides backend
 
 NOTE: Original slide template - Dan Allen & Sarah White
 
-NOTE: All pictures licensed with _Creative Commons_ Attribution, with or without Share Alike
+NOTE: All pictures licensed with `Creative Commons Attribution` or +
+`Creative Commons Attribution-Share Alike`
 
 [.topic.ending, hrole="name"]
 == Galder Zamarreño

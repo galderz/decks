@@ -1,5 +1,5 @@
-= Overcome Data Storage challenges with Infinispan
-Galder Zamarreño ; Red Hat Inc
+= Overcome Data Storage challenges with _Infinispan_
+JUDCon India 2014 ; Bangalore ; 2014/01/31
 include::attributes.adoc[]
 
 :experimental:
@@ -13,65 +13,85 @@ include::attributes.adoc[]
 [.topic.source]
 == Galder Zamarreño
 
+====
+* [icon-user]'{zwsp}' '{zwsp}' R&D Engineer, Red Hat Inc.
+* [icon-user]'{zwsp}' '{zwsp}' Infinispan developer
+* [icon-user]'{zwsp}' '{zwsp}' Vert.x Scala lead
+* [icon-twitter]'{zwsp}' @galderz
+====
+
 [NOTE]
 [role="speaker"]
 ====
-*
+* My name is Galder Zamarreño, and I’m a Red Hat R&D engineer
+* I'm working on Infinispan, which is a in-memory data store library
+* I'm also leading the Vert.x Scala language extension development
 ====
 
 [.topic.source]
 == Agenda
 
+* [icon-note]'{zwsp}' Data store requirements
+* [icon-note]'{zwsp}' Infinispan data store
+* [icon-note]'{zwsp}' Overcome challenges
+
 [NOTE]
 [role="speaker"]
 ====
-*
+* First, we'll talk about evolution data store requirements
+* We'll look at Infinispan, as an in-memory data store
+* Finally, we'll look at some of the data storage challenges, and how to overcome them
 ====
 
 == !
 
 [.statement]
-Mission statement
+`Objective:` +
+Learn how _Infinispan_ helps you +
+overcome data storage challenges
 
 [NOTE]
 [role="speaker"]
 ====
-* Notes
+* The aim of today's presentation is ...
+* ... to show you to how in-memory store such as Infinispan,
+* ... can help you overcome data storage challenges
 ====
 
 [.topic.intro]
-== Topic Title
+== Changing _Requirements_
 
 [NOTE]
 [role="speaker"]
 ====
-* Notes
+* Infinispan created as a result of trying to better serve
+* ... changing requirements in the data storage space
 ====
 
 [.topic.source]
 == Requirements 10 Years Ago
 
 ====
-* Response time in _seconds_
-* Maintenance window of _hours_
+* -- Response time in _seconds_
+* -- Maintenance window of _hours_
 ====
 
 [NOTE]
 [role="speaker"]
 ====
-* Requirements of applications has changed, before:
+* Requirements of applications have changed, before:
 * Response times measured in seconds,
-* ~2 hours maintenance times
+* ~2 hours maintenance times was pretty normal
 ====
 
 [.topic.source]
 == Technologies 10 years ago
 
 ====
-* Databases, databases, databases...
-* Mostly running in single machine
-* Or sharding (complicated)
-* Or clustering (propietary and expensive!)
+* -- _Databases_, databases ...
+* -- Mostly _single machine_
+* -- Sharding? (complicated)
+* -- Clustering? (expensive!)
 ====
 
 [NOTE]
@@ -79,20 +99,18 @@ Mission statement
 ====
 * 10 years ago, the most commonly used data storage was the database
 * The majority of software relied on databases that run on a single machine
-* A lot of people could live with a single machine, but sometimes scaling or providing failover was necessary
-* Some opted for sharding their data
-* They'd have to come up with a way to partition data and locate it from
-their applications which added complexity
-* Others tried to cluster their databases, but this was often very expensive,
-and even then the solutions were not completely satisfactory
+* Single machine fine for many people, but sometimes scaling or providing failover necessary
+* Some opted for sharding their data, which requires partitioning data ...
+* ... locate it added complexity to the applications
+* Others tried to cluster their databases but expensive, and solutions not satisfactory
 ====
 
 [.topic.source]
 == Requirements Nowadays
 
 ====
-* Response time in _milliseconds_
-* _No_ maintenance window
+* -- Response time in _milliseconds_
+* -- _No_ maintenance window
 ====
 
 [NOTE]
@@ -100,37 +118,41 @@ and even then the solutions were not completely satisfactory
 ====
 * Nowadays, users expect millisecond response times
 * There should be no downtime with 24/7 availability
-* Data volumes are in TBs and sometimes even reaching PBs
-* Initially, this was the domain of innovative, internet-driven,
-companies like Google or Twitter
-* But these demands appearing in other industries, starting with the finance
-and telecommunications and others are following
+* Initially, this was the domain of innovative, internet-driven, companies like Google or Twitter
+* But these demands appearing in other industries ...
+* ... starting with the finance and telecommunications and others are following
 ====
 
 [.topic.source]
 == Technologies Nowadays
 
 ====
-* Many options, different flavours!
-* Strongly or eventually consistent
-* Memory or disk
-* ...etc
+* -- Many storage options
+* -- Strong/eventual consistent
+* -- Memory/Disk
+* -- Schemaless/Document
+* -- ... etc
 ====
 
 [NOTE]
 [role="speaker"]
 ====
 * What kind of data technologies are able to cope with these requirements?
-* There are several options, some eventual consistent, some strongly consistent
+* There are several options these days
+* Some eventual consistent, some strongly consistent
+* Some store data in-memory, such as Infinispan/Redis ...
+* Some are schemaless, typically storing key/value pairs ...
+* ... some store documents with more structure ... etc
 ====
 
 [.topic.source]
 == In-Memory Data Grids
 
-====
-In-memory data stores, using the combined RAM memory of multiple nodes
-in a network to store data, often providing an schema-less, Map-like API
-====
+NOTE: What are In-Memory Data Grids (IMDG) ?
+
+_In-memory_ or RAM data stores, +
+using memory of _multiple nodes_ to store data, +
+often providing an schema-less, Map-like API
 
 [NOTE]
 [role="speaker"]
@@ -138,45 +160,96 @@ in a network to store data, often providing an schema-less, Map-like API
 * Today's talk will focus on in-memory data grids
 * And how in-memory data grids are coping with the requirements of the 21st century
 * In-memory data stores combine RAM memory of multiple nodes in a network to store data
-* It's a like Memcached, but on steroids!
+* It's a bit like Memcached, but on steroids!
+* Infinispan is one of the in-memory data grids
+====
+
+[.topic.source]
+== Infinispan
+
+In memory, key-value store, +
+accessible via a `Cache` interface, +
+with JDK ConcurrentMap similarities
+
+[source,java]
+.+Cache.java+
+----
+interface Cache<K, V> {
+  V get(Object key); <1>
+  V put(K key, V value); <2>
+  ...
+}
+----
+
+<1> Retrieve a value associated with a cached key
+<2> Store a key, along with a value
+
+[NOTE]
+[role="speaker"]
+====
+* Infinispan is in fact an in-memory key-value store
+* Accessible via a `Cache` interface ...
+* ... which provides similar methods to the JDK `ConcurrentMap`
+====
+
+[.topic.intro]
+== _response time_ challenge
+
+[NOTE]
+[role="speaker"]
+====
+* Why in-memory? Because we need to address the response time challenge
 ====
 
 [.topic.source]
 == Why In-Memory?
 
-RAM provides the _lowest latency_ possible, relative to the storage size offered.
+RAM provides the _lowest latency_ possible, +
+relative to the storage size offered.
 
-
-"Memory is the new disk, disk is the new tape"
--- ???
+"Memory is the new Disk, +
+Disk is the new tape"
+-- Jim Gray
 
 [NOTE]
 [role="speaker"]
 ====
+* RAM is several orders of magnitude faster than disk for random access to data
+* Cheaper to access a machine's memory from network than disk too!
 * RAM based memory stores offer the lowest latency possible, given the relative storage size
 * The lowest latency possible is achieved at CPU core-level caches, but these are tiny!
 * You can't expect to create a data grid based around CPU core caches! ;)
+* Jim Gray said mentioned this a few years ago
 ====
 
 [.topic.source]
-== More than just latency
+== More Than Just Latency
 
-Latency is important, but scalability too
-Depending how your data grid is accessed, you'd be favouring one or the other
+WARNING: _Latency_ is important, but _scalability_ too!
+
+Depending on your data grid _access patterns_, +
+you'd be favouring one or the other
 
 [NOTE]
 [role="speaker"]
 ====
 * But, is it just about latency? It'd be naive to look at data grids only solely from that perspective
-* Latency is important but scalability
+* Latency is important but scalability as well
+* A single machine might be able to run all services needed by your enterprise
+* But when the load exceeds that machine's capacity, how do you scale?
+* Scale-up and get a better/faster machine?
+* Scale-out distributing your services? <- adds latency, at the expense of scalability
 ====
 
 [.topic.source]
-== Embedded or In-JVM access
+== Embedded or in-JVM access
 
-Applications makes in-JVM calls to data grid, +
-both of which run on same JVM, +
-giving the lowest possible latency, but harder to scale...
+With _embedded_ or in-JVM access, +
+applications and data grid run on same JVM, +
+making _direct Java calls_ which produce _low latency_, +
+but harder to scale ...
+
+image::embedded.png[width=120]
 
 [NOTE]
 [role="speaker"]
@@ -185,16 +258,18 @@ giving the lowest possible latency, but harder to scale...
 * Data grids can often be used directly from the same JVM where they are running
 * Choosing this option gives the lowest latency possible
 * But it means your data grid and application live in the same JVM
-* and sometimes you'd rather keep them two separate to manage each layer independently
-* or to scale each layer independently
-*====
+* ... sometimes you'd rather keep them two separate to manage each layer independently
+* ... or to scale each layer independently
+====
 
 [.topic.source]
 == Remote or Client/Server access
 
-Use data grid remotely, via TCP/IP, +
-via a set of well define protocols: +
+Use data grid _remotely_, via TCP/IP, +
+communicatin with a set of well defined protocols: +
 REST, Memcached and Hot Rod
+
+image::client-server.png[width=220]
 
 [NOTE]
 [role="speaker"]
@@ -202,7 +277,7 @@ REST, Memcached and Hot Rod
 * Alternatively, you can talk a data grid remotely via TCP/IP, using one of the supported protocols
 * Currently, these are REST, Memcached and Hot Rod
 * REST in a HTTP based protocol
-* Memcached is easy, well understood caching protocol
+* Memcached is easy, well understood caching protocol, plenty of clients!!
 * Hot Rod is our own protocol adding some extra features
 * So, until recently, you had to choose embedded or C/S, but that's not the case any more
 ====
@@ -210,72 +285,140 @@ REST, Memcached and Hot Rod
 [.topic.source]
 == Hybrid Mode
 
-Bridges over the embedded and remote access, +
-allowing data to be stored and accessed interchangeably, +
-e.g. store data via embedded API, access it via REST
+Bridges over embedded and remote access, +
+allowing data to be accessed interchangeably, +
+e.g. _store_ data via _embedded_ API, _access_ it via _REST_
+
+image:client-server.png[width=220] image:embedded.png[width=140]
 
 [NOTE]
 [role="speaker"]
 ====
-* Recently we add a new compatibility or hybrid mode, whereby applications
-can use either C/S or embedded more in conjunction
-* This allows developers to decide at runtime which interface they prefer
-to interact against.
+* Recently we added a new compatibility or hybrid mode ...
+* ... whereby applications can use either C/S or embedded more in conjunction
+* This allows developers to decide at runtime which interface they prefer to interact with
+* Store data via embedded API, and retrieve it via REST
+* Store data via Hot Rod and access it via Memcached
+* ... etc
+====
+
+[.topic.intro]
+== _Data Survival_ challenge
+
+[NOTE]
+[role="speaker"]
+====
+* If data is stored in memory, how does data guarantee that it will survive?
+* That's our next challenge, the data survival challenge
 ====
 
 [.topic.source]
 == Data Survival
 
-Distribute data intelligently, keeping multiple copies of the data
-to provide failover (and you get scalability too!)
-Infinispan also pluggable with more durable cache stores
-(e.g. HBase, Cassandra, LevelDB, Cloud...etc)
+_Distribute_ data efficiently, +
+keeping multiple copies of the data, +
+without replicating to all nodes in the cluster +
+-> failover + scalability +
 
-// TODO Add diagram
-// TODO Add demo?
+image:distribution.png[width=200]
 
 [NOTE]
 [role="speaker"]
 ====
 * Hey, but this stuff is stored in memory... what happens if the machine is shut down?
 * How do you make sure data is not lost when a machine fails or is shut down?
-* Distribute data to other machines to provide failover for your data
-* Side effect: using multiple machines means you can scala your application to handle more load
-* One way to distribute data is to replicate data to all nodes in the cluster
-* Total replication is naive and does not scale
+* Distribute data to other machines to provide failover for your data (+ scalability)
+* One way to distribute data is to replicate data to all nodes in the cluster (naive, not scale)
 * Use consistent hash based distribution!
-* You can also plug Infinispan with more durable cache stores
+====
+
+[.topic.source]
+== Strongly Consistent
+
+Infinispan built on a strongly consistent model, +
+where nodes synchronize with each other +
+to apply data updates
+
+[NOTE]
+[role="speaker"]
+====
+* Infinispan implements a strongly consistent model
+* It implies that changes made in a node is made instantaneously visible to other nodes
+* This implies that there's a need to synchronize execution of different nodes
+====
+
+[.topic.source]
+== Total Order with Strong Consistency
+
+Applications updating highly contended data +
+should enable total order to increase throughput, +
+providing strict ordering guarantees with less cost
+
+[NOTE]
+[role="speaker"]
+====
+* Infinispan uses different tricks to keep the systems performing well
+* One example is single node lock acquisition ...
+* ... where single node is responsible for acquiring locks for a key, to avoid deadlocks
+* But when data is highly contended, i.e. store page visits for a website
+* A stricter, total order based commit protocol, can increase throughput
+* Alternative: eventual consistent model... (moves synchronization out of the critical path)
 ====
 
 [.topic.source]
 == Disaster Recovery
 
-Enable cross-site replication, setting up another paralel data grid
-, in another data centre, to which data is replicated, so that it's ready to
-take over in case of emergency
-
-// TODO Add diagram?
+Enable cross-site replication, +
+setting up another parallel data grid, +
+so that it's ready to take over in case of emergency
+image:cross-site.png[width=320]
 
 [NOTE]
 [role="speaker"]
 ====
 * Distributing data, you can cope with individual nodes going down
 * What if your entire network of nodes goes down?
-* IOW, how do you deal with disasters that affect your network, wiping potentially a whole data centre?
+* IOW, how do you deal with disasters that affect your network ...
+* ... wiping potentially a whole data centre?
 * To deal with such scenarios, Infinispan comes with cross-site replication
+* Explain diagram
+====
+
+[.topic.source]
+== Persistence
+
+Infinispan pluggable with +
+more _durable persistence stores_: +
+MongoDB, HBase, Cassandra, LevelDB, JDBC, Cloud ...etc
+
+[NOTE]
+[role="speaker"]
+====
+* Finally, data survival can also be achieved plugging in durable persistence cache stores
+* Mongo DB, Cassandra, HBase, JDBC ...
+====
+
+[.topic.intro]
+== _reducing downtime_ challenge
+
+[NOTE]
+[role="speaker"]
+====
+* Next challenge is: how do you reduce the downtime so that your data store is always available?
 ====
 
 [.topic.source]
 == Reducing downtime
 
-Infinispan helps reduce maitenance downtimem, e.g. software/hardware updates,
-by enablig rolling upgrades of live clusters
+Infinispan helps reduce maitenance downtime, +
+e.g. software/hardware updates, +
+by enabling rolling upgrades of live clusters
 
 [NOTE]
 [role="speaker"]
 ====
-* Even if disaster-level failures are handled, there will be a time when the software needs to be updated
-* To reduce the maintenance time required to do so, Infinispan comes with rolling upgrade capabilities
+* Even if disaster-level failures are handled, there will be a time when software needs to be updated
+* To reduce maintenance time, Infinispan comes with rolling upgrade capabilities
 * It enables you to start a parallel cluster and migrate data over
 * All of that while still serving users
 ====
@@ -283,85 +426,51 @@ by enablig rolling upgrades of live clusters
 [.topic.source]
 == Rolling Upgrades
 
-====
-* New cluster "connected" to old cluster via persistence layer or Command-Line-Interface(CLI)
-* New connected clients directed to new cluster
-* New cluster lazily retrieves data from old cluster
-* When all remaining clients have finished with the old cluster, dump remaining keys to new cluster
-* Disable persistence layer in new cluster and shut down old cluster
-====
+image:rolling1.png[width=360]
 
 [NOTE]
 [role="speaker"]
 ====
-* New cluster points to old one, either via the persistence layer working together with C/S
-* Or via a JMX based command line interface available
-* All clients directed to new cluster once it's up
+* Start up a new cluster points to old one
+* Clients still connected to the old cluster
+* Connection either via the persistence layer working together with C/S
+* ... or via a JMX based command line interface available
+====
+
+[.topic.source]
+== Rolling Upgrades
+
+image:rolling2.png[width=280]
+
+WARNING: Requires a secondary cluster, as big as the existing one, +
+which might not be possible to set up
+
+[NOTE]
+[role="speaker"]
+====
+* Switch any new clients to the new cluster, once it's up
 * Any data not present in the new cluster is lazy loaded from the old cluster
-* When no connections left to old cluster, via JMX dump the rest of keys from old cluster to new one
+* When no connections left, dump the rest of keys from old cluster to new one (JMX)
 * Finally, disable the persistence layer in new cluster and switch off old cluster
-====
-
-[.topic.source]
-== Caveats of Rolling Upgrades
-
-Requires a secondary cluster, as big as the existing one,
-which might not be possible to set up for some users
-
-[NOTE]
-[role="speaker"]
-====
-* It requires you to have a secondary cluster, as big as the existing cluster
+* Problem: requires a secondary cluster, as big as the existing cluster
 * This might not be possible due to budget or other restrictions
-* For next Infinispan version we're working on an alternative solution which
-does require downtime, but can help those users that cannot have a separate cluster
+* WIP: solution requires downtime but helps users that cannot have a separate cluster
 ====
 
-strongly consistent model challenges + total order
-querying...
-
-[.topic.source]
-== Strongly Consistent
-
-Infinispan built on a strongly consistent model,
-where nodes synchronize with each other
-to apply data updates
+[.topic.intro]
+== _query_ challenge
 
 [NOTE]
 [role="speaker"]
 ====
-* Infinispan implements a strongly consistent model
-* This model implies that changes made in one of the nodes is made
-instantaneously visible to the other nodes
-* This implies that there's a need to synchronize execution of different
-nodes.
-====
-
-[.topic.source]
-== Total Order with Strong Consistency
-
-Applications updating highly contended data
-should enable total order to increase throughput
-
-[NOTE]
-[role="speaker"]
-====
-* Infinispan uses different tricks to keep the systems performing well
-* One example is single node lock acquisition where a single node is
-responsible for acquiring locks for a particular key, in order to avoid deadlocks
-* But when data is highly contended, i.e. store page visits for a website
-* A stricter, total order based commit protocol, can increase throughput
-* Alternative = eventual consistent model
-* This is a weaker model that moves synchronization out of the critical path, to the background
-* In this way, updates can always be made locally, even if the network is partitioned
-* However, it still requires conflict arbitration techniques, such as consensus algorithms or rollbacks
-* Developers still find hard to deal with this
+* The next data challenge is, how do we query the cache in Infinispan
 ====
 
 [.topic.source]
 == Querying via Map
 
-Key/value maps are easy to understand, but limited in their querying:
+Key/value stores are easy to understand, +
+but limited in their querying:
 
 [source,java]
 .+Chess.java+
@@ -370,13 +479,15 @@ Cache<String, ChessPiece> cache = ...
 ChessPiece piece = cache.get("c7");
 ----
 
-// TODO: Add image
+image::chess.jpg[width=240]
 
 [NOTE]
 [role="speaker"]
 ====
 * Querying is a key aspect of any database-driven application
 * A key/value map offers basic querying, based around retrieving a particular key
+* But it quickly gets complicated when you want to retrieve data differently
+* For example, how to find out where the White King is?
 ====
 
 [.topic.source]
@@ -385,8 +496,10 @@ ChessPiece piece = cache.get("c7");
 "How many books by Tolkien?"
 -- A query
 
-* Map-like structure not enough to answer these question
-* Need to index data
+'{zwsp}'
+
+* [icon-warning]'{zwsp}' Key/value store not enough, +
+* need to index data
 
 [NOTE]
 [role="speaker"]
@@ -420,7 +533,9 @@ import org.hibernate.search.annotations.Indexed;
 [NOTE]
 [role="speaker"]
 ====
-* Use Hibernate Search annotations to enable indexing particular fields of a Java POJO
+* Indexing enables this, and many other style of of queries
+* For that, Infinispan integrates with Hibernate Search ...
+* ... which enables indexing particular fields of a Java POJO
 * Here, a Book's title, author and editor are indexed
 ====
 
@@ -430,128 +545,197 @@ import org.hibernate.search.annotations.Indexed;
 [source,java]
 .+Query.java+
 ----
-import org.infinispan.query.SearchManager;
-import org.infinispan.query.Search;
-import org.apache.lucene.search.Query;
+import org.infinispan.Cache;
+import org.infinispan.query.dsl.*;
 
 Cache<String, Book> bookShelf = ... <1>
-SearchManager search = Search.getSearchManager(bookShelf);
-Query query = search.buildQueryBuilderForClass(Book.class) <2>
-  .get().phrase().onField("author").sentence("Tolkien").createQuery();
-List<Object> list = search.getQuery(query).list(); <3>
+QueryFactory qf = Search.getSearchManager(bookShelf).getQueryFactory();
+Query q = qf.from(Book.class).having("surname")
+   .contains("Tolkien").toBuilder().build(); <2>
+List<Book> list = q.list(); <3>
 ----
 
 <1> Cache containing books
-<2> Build query, using Infinispan Query module and Apache Lucene
+<2> Build query, using Infinispan Query DSL (Apache Lucene underneath)
 <3> Execute query and get results
 
 [NOTE]
 [role="speaker"]
 ====
 * Once data is indexed, the cache can be queried
-* For that, we use the Infinispan Query module, which uses Hibernate Search underneath,
-together with Apache Lucene's query capabilities, to create the query
+* For that, we use the Infinispan Query module (using Hibernate Search underneath) ...
+* ... together with Apache Lucene's query capabilities, to create the query
 * Once the query is complete, we execute the query
 ====
 
 [.topic.source]
-== ...
+== Remote Querying
+
+[source,java]
+.+RemoteQuery.java+
+----
+import org.infinispan.client.hotrod.*;
+import org.infinispan.query.dsl.*;
+
+RemoteCache<String, Book> remoteBookShelf = ...
+QueryFactory qf = Search.getSearchManager(remoteBookShelf).getQueryFactory();
+Query q = qf.from(Book.class).having("surname")
+   .contains("Tolkien").toBuilder().build();
+List<Book> list = q.list();
+----
+
+[source]
+.+book.proto+
+----
+message Book {
+  required string title = 1;
+  required string surname = 2;
+}
+----
 
 [NOTE]
 [role="speaker"]
 ====
-*
+* We've now extended querying of indexed data beyond Java embedded access
+* We now support language-independent remote querying
+* Even though Hot Rod is a binary protocol, structure needed for querying
+* We use Google Protocol Buffers to define entities in a language independent way
+* It allows for entities to be deconstructed for indexing
 ====
 
 [.topic.source]
-== ...
+== Map/Reduce
+
+Leverages Infinispan Distribution mode to perform +
+tasks _mapped_ over data sets in parallel +
+and pull back _reduced_ results
 
 [NOTE]
 [role="speaker"]
 ====
-*
+* M/R based on Google’s paper
+* Allows you to perform a task over a data set in parallel, and pull back “reduced” results
+* In the case of Infinispan, data is DIST anyway. So your global data set is disjoint
+* Typical example: word count
+* Calculate the number of words based on data in each node
+* Then aggregate the results from all nodes
 ====
 
 [.topic.source]
-== ...
+== Map/Reduce Example
+
+[source,java]
+.+WordCountMapper.java+
+----
+import org.infinispan.distexec.mapreduce.*;
+
+class WordCounterMapper implements Mapper<String, String, String, Integer> { <1>
+   public void map(String key, String value, Collector<String, Integer> c) { <2>
+      StringTokenizer tokens = new StringTokenizer(value);
+      while (tokens.hasMoreElements())
+         c.emit((String) tokens.nextElement(), 1); <3>
+   }
+}
+----
+<1> Implement Map/Reduce that emits how often a word appears in the cache
+<2> Cache contains line numbers as keys, and lines as values
+<3> Track each time a word appears in the cache
 
 [NOTE]
 [role="speaker"]
 ====
-*
+* Here's a map/reduce function whose job is to count how often a word appears in the cache
+* The cache contains line numbers as keys and text lines as values
+* The map callback happens in each distributed node, working on the local cache
+* It emits an intermediate result of each word appearing
 ====
 
 [.topic.source]
-== ...
+== Map/Reduce Example
+
+[source,java]
+.+WordCountReducer.java+
+----
+import org.infinispan.distexec.mapreduce.*;
+
+class WordCounterMapper implements Reducer<String, Integer> { <1>
+   public Integer reduce(String key, Iterator<Integer> iter) {
+      int sum = 0;
+      while (iter.hasNext()) sum += (Integer) iter.next(); <1>
+      return sum;
+   }
+}
+----
+<1> In the reducer, take all times a word appears and count
 
 [NOTE]
 [role="speaker"]
 ====
-*
+* In the reduce function, run in the node where the function was executed
+* ... take all the counts for each word and sum them up
 ====
 
 [.topic.source]
-== ...
+== Summary
+
+In-memory data stores, such as Infinispan, +
+have appeared as a result of changing requirements, +
+to reduce latency and downtime
 
 [NOTE]
 [role="speaker"]
 ====
-*
+* To summarise, we've looked at the changing requirements in the data storage space
+* Alternative storage solutions have appeared as a result
+* Some of which use memory to store data to reduce latency
+* Infinispan is one of them, in the category of in-memory data grids
+* ... giving users very low latency
+* ... with key/value main API
 ====
 
 [.topic.source]
-== ...
+== Summary
+
+Infinispan is accessible via embedded or client/server, +
+can store data in a distributed fashion, +
+with an option to do cross-site replication
 
 [NOTE]
 [role="speaker"]
 ====
-*
+* We've seen how it can be accessed in embedded or client/server fashion
+* How the data survival challenge is overcomed by distributing data around nodes
+* ... which can be speeded up in contended scenarios with total replication
+* And how, even if the cluster goes down, cross-site replication can provide backup
 ====
 
 [.topic.source]
-== ...
+== Summary
+
+Infinispan reduces downtime with rolling upgrades, +
+which allow clusters to be upgraded live, +
+and offers multiple ways to query data: +
+`Cache.get()`, queries on indexed data, map/reduce
 
 [NOTE]
 [role="speaker"]
 ====
-*
+* Another of the challenges, reducing downtime, is overcomed with rolling upgrades
+* ... which allows Infinispan clusters to be upgraded live
+* Finally, we've looked at the challenge of querying Infinispan
+* The basic key/value API is very limited from querying perspective
+* Indexing and queries can help hugely, and it's available both in embedded and remote
+* Finally, map/reduce functions are another way to execute distributed queries
 ====
 
 [.topic.source]
-== ...
+== References
 
-[NOTE]
-[role="speaker"]
-====
-*
-====
+NOTE: Infinispan - http://infinispan.org
 
-[.topic.source]
-== ...
+NOTE: Slides generated with Asciidoctor and DZSlides backend
 
-[NOTE]
-[role="speaker"]
-====
-*
-====
-
-[.topic.source]
-== ...
-
-[NOTE]
-[role="speaker"]
-====
-*
-====
-
-[.topic.source]
-== ...
-
-[NOTE]
-[role="speaker"]
-====
-*
-====
+NOTE: Original slide template - Dan Allen & Sarah White
 
 [.topic.ending, hrole="name"]
 == Galder Zamarreño
