@@ -417,7 +417,7 @@ by enabling rolling upgrades of live clusters
 [NOTE]
 [role="speaker"]
 ====
-* Even if disaster-level failures are handled, there will be a time when software needs to be updated
+* Even if disaster-level failures are handled, there will be a time when software needs updating
 * To reduce maintenance time, Infinispan comes with rolling upgrade capabilities
 * It enables you to start a parallel cluster and migrate data over
 * All of that while still serving users
@@ -658,7 +658,7 @@ class WordCounterMapper implements Mapper<String, String, String, Integer> { <1>
 ----
 import org.infinispan.distexec.mapreduce.*;
 
-class WordCounterMapper implements Reducer<String, Integer> { <1>
+class WordCountReducer implements Reducer<String, Integer> { <1>
    public Integer reduce(String key, Iterator<Integer> iter) {
       int sum = 0;
       while (iter.hasNext()) sum += (Integer) iter.next(); <1>
