@@ -1,5 +1,5 @@
 = _Reactive_ Functional Programming with _Vert.x_
-JUDCon India 2014 ; Bangalore ; 2014/01/30
+JUG Switzerland ; Basel ; 2014/06/02
 include::attributes.adoc[]
 
 :experimental:
@@ -26,6 +26,9 @@ include::attributes.adoc[]
 * My name is Galder Zamarreño, and I’m a Red Hat R&D engineer
 * I'm currently leading the Vert.x Scala language extension development
 * I'm also working on Infinispan, which is a in-memory data store library
+* Recently moved to Basel, working from home mostly
+* Fiancee here today to see what I do at home all day ;)
+* Nudge if she starts laughing or falling asleep ;)
 ====
 
 [.topic.source]
@@ -565,11 +568,9 @@ import org.vertx.java.platform.Verticle;
 
 public class HelloWorld extends Verticle {
   public void start() {
-    vertx.createHttpServer().requestHandler(new Handler<HttpServerRequest>() { <1>
-      public void handle(HttpServerRequest req) {
-        req.response().end("<body><h1>Hello World from Java!</h1></body>"); <2>
-      }
-    }).listen(8080);
+     vertx.createHttpServer().requestHandler(req -> <1>
+           req.response().end("<body><h1>Hello World from Java!</h1></body>") <2>
+     ).listen(8080);
   }
 }
 ----
@@ -580,32 +581,14 @@ public class HelloWorld extends Verticle {
 [role="speaker"]
 ====
 * Event handling not new, event handling traditionally done using call-backs
-* Here's an example of a Java Verticle
+* Here's an example of a Java Verticle, taking advantage of Java 8 lambdas
 * Creates an HTTP server that listens in port 8080 and adds a request handler
 * Reply with the same message to all incoming requests
 * Let's run this demo -> Go to `Terminal`
 ====
 
 [.topic.source]
-== Event-Driven, The Functional Way
-
-Functional style better for _event-driven_ systems +
-_Scala_ is a great language to write Vert.x apps, +
-the _functional_ way
-
-image::scala.png[width=120]
-
-[NOTE]
-[role="speaker"]
-====
-* Dealing with call-backs in the imperative way is bulky
-* Functional programming style more suited for event-driven systems
-* Scala offers a mature, established way, to do FP today, without waiting for Java8
-* It runs on the JVM, as a normal library, and has excellent support in all major IDEs
-====
-
-[.topic.source]
-== Scala Verticle Demo
+== Event-Driven, The Scala Way
 
 [source,scala]
 .+HelloWorld.scala+
@@ -621,12 +604,13 @@ vertx.createHttpServer.requestHandler { req: HttpServerRequest => <1>
 [NOTE]
 [role="speaker"]
 ====
-* Here's a Scala version of the previous Hello World verticle, less verbose, function passing better
-* A similar thing will be doable w/ Java 8, but Scala's goes well beyond just passing functions
-* A key aspect of functional programming is composability: _Do this with event, then do this..._
-* In Java, this will be done adding callbacks after callbacks
-* Scala offers nice syntatic sugar to make dealing with callbacks more bearable :)
-* Not ready, but as soon as we have 1-to-1 mapping with Java API, we'll start working on it :)
+* Java 8 has brought "a bit of" functional programming to Java
+* Functional interface limitations, what is a method? Idioms...
+* If stuck with Java 7 or 6, or want to use a language where FP is 1st class citizen
+* ... Vert.x provides endpoints for other languages, such as Scala
+* Scala's benefits go beyond simple function passing, with things like:
+* Case classes, pattern matching, for comprehensions...etc
+* Here's a Scala version of the previous Hello World verticle, very similar
 * Let's run this demo -> Go to `Terminal`
 ====
 
@@ -692,7 +676,7 @@ flickr.com/photos/31029865@N06/6646814881
 ====
 
 [.topic.source]
-== Scalability Demo- Receiver
+== Scalability Demo - Receiver
 
 [source,js]
 .+receiver.js+
@@ -767,7 +751,7 @@ server.listen(8080)
 ====
 * In the final part of the scalability demo, we're going to take the scalability one step further
 * We're going to show how to get those events propagated to the client side
-* For that, we need a bridge server to push the messages via SockJs
+* For that, we need a bridge server to push the messages via Sockjs
 * Sockjs is an abstraction over WebSockets ...
 * ... that allows WebSockets-like behaviour even in browsers that do not support WebSockets
 * Sockjs bridges client-side event bus with server-side event bus
@@ -842,7 +826,7 @@ vertx.setPeriodic(1000) { <1>
 }
 ----
 
-<1> Execute a function peridically (1 second)
+<1> Execute a function periodically (1 second)
 <2> Function publishes an event to `news-feed` subscription
 
 [NOTE]
